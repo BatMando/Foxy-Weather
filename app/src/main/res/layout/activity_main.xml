@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homeScreenLayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/day"
+    android:scaleX="1"
+    android:scaleY="1"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bubbleNavigationBar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+        <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+            android:id="@+id/bubbleNavigationBar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:background="#BFFFFFFF"
+            android:elevation="40dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/homeToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bt_active="true"
+                app:bt_colorActive="@color/MainColor"
+                app:bt_colorInactive="@color/inActiveColor"
+                app:bt_icon="@drawable/ic_home"
+                app:bt_title="@string/home" />
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/favToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                app:bt_active="true"
+                app:bt_colorActive="@color/MainColor"
+                app:bt_colorInactive="@color/inActiveColor"
+                app:bt_icon="@drawable/ic_favs"
+                app:bt_title="@string/favorites" />
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/notificationsToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                app:bt_active="true"
+                app:bt_colorActive="@color/MainColor"
+                app:bt_colorInactive="@color/inActiveColor"
+                app:bt_icon="@drawable/ic_notifications"
+                app:bt_title="@string/notifications" />
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/settingsToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                app:bt_active="true"
+                app:bt_colorActive="@color/MainColor"
+                app:bt_colorInactive="@color/inActiveColor"
+                app:bt_icon="@drawable/ic_settings"
+                app:bt_title="@string/settings" />
+
+        </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
