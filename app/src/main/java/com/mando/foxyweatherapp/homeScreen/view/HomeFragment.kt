@@ -20,6 +20,7 @@ import com.mando.foxyweatherapp.homeScreen.viewModel.HomeFragmentViewModelFactor
 import com.mando.foxyweatherapp.model.responseModels.*
 import com.mando.foxyweatherapp.network.RemoteSource
 import com.mando.foxyweatherapp.utitlity.getCityText
+import com.mando.foxyweatherapp.utitlity.longToDateAsString
 import java.io.IOException
 import java.util.*
 
@@ -36,6 +37,12 @@ class HomeFragment : Fragment() {
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
 
 
+    private lateinit var windSpeedUnit: String
+    private lateinit var temperatureUnit: String
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+    private var language: String = "en"
+    private var units: String = "metric"
 
     private lateinit var tvLocation: TextView
     private lateinit var tvCurrentTemp: TextView
@@ -49,6 +56,8 @@ class HomeFragment : Fragment() {
     private lateinit var cloudsTv: TextView
     private lateinit var uvTv: TextView
     private lateinit var visibilityTv: TextView
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +79,7 @@ class HomeFragment : Fragment() {
             RemoteSource.getInstance(), requireContext()
         ))
 
+        setEnglishUnits("metric")
         homeFragmentViewModel = ViewModelProvider(this,homeFragmentViewModelFactory).get(HomeFragmentViewModel::class.java)
         homeFragmentViewModel.getWeatherFromNetwork(29.9619891,30.9406877,"metric","en")
         //getAddress(29.9619891,30.9406877)
@@ -83,7 +93,19 @@ class HomeFragment : Fragment() {
 
     private fun setDataToViews(weatherResponse: WeatherResponse,context: Context){
         tvLocation.text = getCityText(context,weatherResponse.lat,weatherResponse.lon,"en")
-        tvCurrentTemp.text
+        tvCurrentTemp.text = "${weatherResponse.current.temp.toInt()}"
+        tvDate.text = longToDateAsString(weatherResponse.current.dt)
+        tvTempState.text = weatherResponse.current.weather[0].description
+
+        tvTempUnit.text = temperatureUnit
+        tvDayTemp.text = "${weatherResponse.daily[0].temp.max.toInt()}$temperatureUnit/${weatherResponse.daily[0].temp.min.toInt()}$temperatureUnit"
+        pressureTv.text = "${weatherResponse.current.pressure} hps"
+        humidityTv.text = "${weatherResponse.current.humidity}%"
+        windTv.text = "${weatherResponse.current.windSpeed} $windSpeedUnit"
+        cloudsTv.text = "${weatherResponse.current.clouds} hps"
+        uvTv.text = "${weatherResponse.current.uvi.toInt()}%"
+        visibilityTv.text = "${weatherResponse.current.visibility} $windSpeedUnit"
+
         daysForecastRecyclerAdapter.dailyWeather = weatherResponse.daily
         hoursForecastRecyclerAdapter.hourlyWeather = weatherResponse.hourly
         daysForecastRecyclerAdapter.notifyDataSetChanged()
@@ -118,9 +140,22 @@ class HomeFragment : Fragment() {
 
         daysRecyclerView.adapter = daysForecastRecyclerAdapter
         hoursRecyclerView.adapter = hoursForecastRecyclerAdapter
+    }
 
-
-
-
+    private fun setEnglishUnits(units: String) {
+        when (units) {
+            "metric" -> {
+                temperatureUnit = " °C"
+                windSpeedUnit = " m/s"
+            }
+            "imperial" -> {
+                temperatureUnit = " °F"
+                windSpeedUnit = " miles/h"
+            }
+            "standard" -> {
+                temperatureUnit = " °K"
+                windSpeedUnit = " m/s"
+            }
+        }
     }
 }
