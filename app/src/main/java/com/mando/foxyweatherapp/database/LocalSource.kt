@@ -1,14 +1,11 @@
-package com.mando.foxyweatherapp.model.repo
+package com.mando.foxyweatherapp.database
 
 import androidx.lifecycle.LiveData
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
 import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
-import retrofit2.Response
 
-interface RepositoryInterface {
-    suspend fun getWeatherFromNetwork(lat:Double , lon:Double, units:String , lang:String): Response<WeatherResponse>
-
+interface LocalSource {
     suspend fun insertWeather(weather: WeatherResponse)
     suspend fun allStoredWeather(): WeatherResponse
 
@@ -19,4 +16,5 @@ interface RepositoryInterface {
     fun insertAlert(alert: Alerts)
     fun deleteAlert(alert: Alerts)
     suspend fun allStoredAlerts(): LiveData<List<Alerts>>
+
 }

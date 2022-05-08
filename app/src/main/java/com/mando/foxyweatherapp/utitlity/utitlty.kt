@@ -1,13 +1,18 @@
 package com.mando.foxyweatherapp.utitlity
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.location.Geocoder
+import android.net.NetworkCapabilities
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import com.mando.foxyweatherapp.R
 import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 
 fun getIcon(imageString: String): Int {
@@ -61,8 +66,58 @@ fun getDayOfWeek(timestamp: Long): String {
 
 fun longToDateAsString(dateInMillis: Long): String {
     val d = Date(dateInMillis * 1000)
-    val dateFormat: DateFormat = SimpleDateFormat("d MMM, yyyy")
+    val dateFormat: DateFormat = SimpleDateFormat("d MMM, yyyy", Locale.ENGLISH)
     return dateFormat.format(d)
+}
+
+fun getSharedPreferences(context: Context): SharedPreferences {
+    return context.getSharedPreferences(
+        context.getString(R.string.shared_pref),
+        Context.MODE_PRIVATE
+    )
+}
+
+
+fun isSharedPreferencesLatAndLongNull(context: Context): Boolean {
+    val myPref = getSharedPreferences(context)
+    val lat = myPref.getFloat(context.getString(R.string.lat), 0.0f)
+    val long = myPref.getFloat(context.getString(R.string.lon), 0.0f)
+    return lat == 0.0f && long == 0.0f
+}
+
+fun updateSharedPreferences(context: Context,lat: Double,long: Double,location: String) {
+    val editor = getSharedPreferences(context).edit()
+    editor.putFloat(context.getString(R.string.lat), lat.toFloat())
+    editor.putFloat(context.getString(R.string.lon), long.toFloat())
+    editor.putString(context.getString(R.string.location), location)
+    editor.apply()
+}
+
+
+fun getCurrentLocale(context: Context): Locale? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        context.resources.configuration.locales[0]
+    } else {
+        context.resources.configuration.locale
+    }
+}
+
+fun convertNumbersToArabic(value: Double): String {
+    return (value.toString() + "")
+        .replace("1".toRegex(), "١").replace("2".toRegex(), "٢")
+        .replace("3".toRegex(), "٣").replace("4".toRegex(), "٤")
+        .replace("5".toRegex(), "٥").replace("6".toRegex(), "٦")
+        .replace("7".toRegex(), "٧").replace("8".toRegex(), "٨")
+        .replace("9".toRegex(), "٩").replace("0".toRegex(), "٠")
+}
+
+fun convertNumbersToArabic(value: Int): String {
+    return (value.toString() + "")
+        .replace("1".toRegex(), "١").replace("2".toRegex(), "٢")
+        .replace("3".toRegex(), "٣").replace("4".toRegex(), "٤")
+        .replace("5".toRegex(), "٥").replace("6".toRegex(), "٦")
+        .replace("7".toRegex(), "٧").replace("8".toRegex(), "٨")
+        .replace("9".toRegex(), "٩").replace("0".toRegex(), "٠")
 }
 
 

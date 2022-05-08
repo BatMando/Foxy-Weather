@@ -14,7 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
         android:scaleType="fitXY"
         app:lottie_rawRes="@raw/splash"
         tools:ignore="ImageContrastCheck" />
