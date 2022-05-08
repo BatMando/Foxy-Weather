@@ -11,7 +11,7 @@
     <color name="MainColor">#5e4575</color>
     <color name="SecondColor">#C05995</color>
     <color name="inActiveColor">#4B5E4575</color>
-    <color name="grayTransparent">#2A000000</color>
+    <color name="grayTransparent">#40000000</color>
     <color name="whiteTransparent">#2AFFFFFF</color>
 
 

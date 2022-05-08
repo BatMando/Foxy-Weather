@@ -1,9 +1,13 @@
 package com.mando.foxyweatherapp.homeScreen.view
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,17 +16,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappmvvm.model.Repository
+import com.google.android.material.snackbar.Snackbar
 import com.mando.foxyweatherapp.R
+import com.mando.foxyweatherapp.database.ConcreteLocalSource
+import com.mando.foxyweatherapp.database.LocalSource
 import com.mando.foxyweatherapp.homeScreen.viewModel.HomeFragmentViewModel
 import com.mando.foxyweatherapp.homeScreen.viewModel.HomeFragmentViewModelFactory
+import com.mando.foxyweatherapp.map.view.MapActivity
 import com.mando.foxyweatherapp.model.responseModels.*
 import com.mando.foxyweatherapp.network.RemoteSource
-import com.mando.foxyweatherapp.utitlity.getCityText
-import com.mando.foxyweatherapp.utitlity.longToDateAsString
+import com.mando.foxyweatherapp.utitlity.*
+import com.mando.foxyweatherapp.utitlity.broadCast.NetworkChangeReceiver
+import com.mando.foxyweatherapp.utitlity.broadCast.NetworkChangeReceiver.Companion.isThereInternetConnection
 import java.io.IOException
 import java.util.*
 
@@ -30,10 +40,10 @@ import java.util.*
 class HomeFragment : Fragment() {
 
     private lateinit var daysForecastRecyclerAdapter: Past7DaysForecastRecyclerAdapter
-    private lateinit var daysLayoutManger : RecyclerView.LayoutManager
+    private lateinit var daysLayoutManger: RecyclerView.LayoutManager
     private lateinit var daysRecyclerView: RecyclerView
     private lateinit var hoursForecastRecyclerAdapter: Past24HoursForecastRecyclerAdapter
-    private lateinit var hoursLayoutManger : RecyclerView.LayoutManager
+    private lateinit var hoursLayoutManger: RecyclerView.LayoutManager
     private lateinit var hoursRecyclerView: RecyclerView
     private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
@@ -61,8 +71,11 @@ class HomeFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setValuesFromSharedPreferences()
+
     }
 
     override fun onCreateView(
@@ -76,41 +89,121 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+
         progressDialog = ProgressDialog(context)
-        progressDialog.setTitle("Kotlin Progress Bar")
+        progressDialog.setTitle("Loading")
         progressDialog.setMessage("Application is loading, please wait")
         progressDialog.show()
 
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(Repository.getInstance(
-            RemoteSource.getInstance(), requireContext()
-        ))
+        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(
+            Repository.getInstance(
+                RemoteSource.getInstance(), ConcreteLocalSource(requireContext()), requireContext()
+            ), MyLocationProvider(this)
+        )
+        homeFragmentViewModel =
+            ViewModelProvider(this, homeFragmentViewModelFactory)[HomeFragmentViewModel::class.java]
 
-        setEnglishUnits("metric")
-        homeFragmentViewModel = ViewModelProvider(this,homeFragmentViewModelFactory).get(HomeFragmentViewModel::class.java)
-        homeFragmentViewModel.getWeatherFromNetwork(29.9619891,30.9406877,"metric","en")
-        //getAddress(29.9619891,30.9406877)
-        homeFragmentViewModel.myMovies.observe(this.viewLifecycleOwner){ weather ->
-          //  Log.e("mando", "onViewCreated: ${weather.current.temp}" )
+        if (isThereInternetConnection) {
+            if (!isSharedPreferencesLatAndLongNull(requireContext())) {
+                //setValuesFromSharedPreferences()
+                Log.e("mando","isSharedPreferencesLatAndLongNull :lat $latitude, lon $longitude")
+                try {
+                    homeFragmentViewModel.getDataFromRemoteToLocal(
+                        latitude,
+                        longitude,
+                        language,
+                        units
+                    )
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } else if (getIsMap()) {
+                Log.e("mando","getIsMap:lat $latitude, lon $longitude")
+                val intent = Intent(requireContext(), MapActivity::class.java)
+                intent.putExtra("isFavourite", false)
+                startActivity(intent)
+            } else {
+                //dialog to get fresh location
+                Log.e("mando","get location :lat $latitude, lon $longitude")
+                val location = MyLocationProvider(this)
+                if (location.checkPermission() && location.isLocationEnabled()) {
+                    homeFragmentViewModel.getFreshLocation()
+                }else {
+                    homeFragmentViewModel.getFreshLocation()
+                }
+            }
+            homeFragmentViewModel.observeLocation().observe(this) {
+                if (it[0] != 0.0 && it[1] != 0.0) {
+                    latitude = it[0]
+                    longitude = it[1]
+                    val local = getCurrentLocale(requireContext())
+                    language = getSharedPreferences(requireContext()).getString(
+                        getString(R.string.languageSetting),
+                        local?.language
+                    )!!
+                    units = getSharedPreferences(requireContext()).getString(
+                        getString(R.string.unitsSetting),
+                        "metric"
+                    )!!
+                    try {
+                        homeFragmentViewModel.getDataFromRemoteToLocal(
+                            latitude,
+                            longitude,
+                            language,
+                            units
+                        )
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
 
-            setDataToViews(weather,requireContext())
-            progressDialog.hide()
+        } else{
+            Log.e("mando","no network:lat $latitude, lon $longitude")
+            homeFragmentViewModel.getDataFromDatabase()
         }
+
+        homeFragmentViewModel.myWeather.observe(this.viewLifecycleOwner) { weather ->
+            setDataToViews(weather, requireContext())
+            progressDialog.dismiss()
+        }
+
     }
 
-    private fun setDataToViews(weatherResponse: WeatherResponse,context: Context){
-        tvLocation.text = getCityText(context,weatherResponse.lat,weatherResponse.lon,"en")
-        tvCurrentTemp.text = "${weatherResponse.current.temp.toInt()}"
+    @SuppressLint("SetTextI18n")
+    private fun setDataToViews(weatherResponse: WeatherResponse, context: Context) {
+
+        if (language == "ar") {
+            setArabicUnit(units)
+            tvCurrentTemp.text = convertNumbersToArabic(weatherResponse.current.temp.toInt())
+            tvDayTemp.text =
+                "${convertNumbersToArabic(weatherResponse.daily[0].temp.max.toInt())}$temperatureUnit/${
+                    convertNumbersToArabic(weatherResponse.daily[0].temp.min.toInt())
+                }$temperatureUnit"
+            pressureTv.text = "${convertNumbersToArabic(weatherResponse.current.pressure)}  هب"
+            humidityTv.text = "${convertNumbersToArabic(weatherResponse.current.humidity)}%"
+            windTv.text =
+                "${convertNumbersToArabic(weatherResponse.current.windSpeed)}$windSpeedUnit"
+            cloudsTv.text = "${convertNumbersToArabic(weatherResponse.current.clouds)}  هب"
+            uvTv.text = "${convertNumbersToArabic(weatherResponse.current.uvi.toInt())}%"
+            visibilityTv.text =
+                "${convertNumbersToArabic(weatherResponse.current.visibility)}$windSpeedUnit"
+        } else {
+            setEnglishUnits(units)
+            tvCurrentTemp.text = "${weatherResponse.current.temp.toInt()}"
+            tvDayTemp.text =
+                "${weatherResponse.daily[0].temp.max.toInt()}$temperatureUnit/${weatherResponse.daily[0].temp.min.toInt()}$temperatureUnit"
+            pressureTv.text = "${weatherResponse.current.pressure} hps"
+            humidityTv.text = "${weatherResponse.current.humidity}%"
+            windTv.text = "${weatherResponse.current.windSpeed}$windSpeedUnit"
+            cloudsTv.text = "${weatherResponse.current.clouds} hps"
+            uvTv.text = "${weatherResponse.current.uvi.toInt()}%"
+            visibilityTv.text = "${weatherResponse.current.visibility}$windSpeedUnit"
+        }
+        tvLocation.text = getCityText(context, weatherResponse.lat, weatherResponse.lon, language)
         tvDate.text = longToDateAsString(weatherResponse.current.dt)
         tvTempState.text = weatherResponse.current.weather[0].description
-
         tvTempUnit.text = temperatureUnit
-        tvDayTemp.text = "${weatherResponse.daily[0].temp.max.toInt()}$temperatureUnit/${weatherResponse.daily[0].temp.min.toInt()}$temperatureUnit"
-        pressureTv.text = "${weatherResponse.current.pressure} hps"
-        humidityTv.text = "${weatherResponse.current.humidity}%"
-        windTv.text = "${weatherResponse.current.windSpeed}$windSpeedUnit"
-        cloudsTv.text = "${weatherResponse.current.clouds} hps"
-        uvTv.text = "${weatherResponse.current.uvi.toInt()}%"
-        visibilityTv.text = "${weatherResponse.current.visibility}$windSpeedUnit"
 
         daysForecastRecyclerAdapter.dailyWeather = weatherResponse.daily
         hoursForecastRecyclerAdapter.hourlyWeather = weatherResponse.hourly
@@ -118,7 +211,7 @@ class HomeFragment : Fragment() {
         hoursForecastRecyclerAdapter.notifyDataSetChanged()
     }
 
-    private fun initView(view: View){
+    private fun initView(view: View) {
         tvLocation = view.findViewById(R.id.tv_location)
         tvCurrentTemp = view.findViewById(R.id.tv_current_temp)
         tvTempUnit = view.findViewById(R.id.tv_temp_unit)
@@ -138,14 +231,44 @@ class HomeFragment : Fragment() {
         daysForecastRecyclerAdapter = Past7DaysForecastRecyclerAdapter()
         hoursForecastRecyclerAdapter = Past24HoursForecastRecyclerAdapter()
 
-        daysLayoutManger = LinearLayoutManager(activity,RecyclerView.VERTICAL,false)
-        hoursLayoutManger = LinearLayoutManager(activity,RecyclerView.HORIZONTAL,false)
+        daysLayoutManger = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        hoursLayoutManger = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
 
         daysRecyclerView.layoutManager = daysLayoutManger
         hoursRecyclerView.layoutManager = hoursLayoutManger
 
         daysRecyclerView.adapter = daysForecastRecyclerAdapter
         hoursRecyclerView.adapter = hoursForecastRecyclerAdapter
+    }
+
+    private fun setValuesFromSharedPreferences() {
+        getSharedPreferences(requireContext()).apply {
+            latitude = getFloat(getString(R.string.lat), 0.0f).toDouble()
+            longitude = getFloat(getString(R.string.lon), 0.0f).toDouble()
+            language = getString(getString(R.string.languageSetting), "en") ?: "en"
+            units = getString(getString(R.string.unitsSetting), "metric") ?: "metric"
+        }
+    }
+
+    private fun getIsMap(): Boolean {
+        return getSharedPreferences(requireContext()).getBoolean(getString(R.string.isMap), false)
+    }
+
+    private fun setArabicUnit(units: String) {
+        when (units) {
+            "metric" -> {
+                temperatureUnit = " °م"
+                windSpeedUnit = " م/ث"
+            }
+            "imperial" -> {
+                temperatureUnit = " °ف"
+                windSpeedUnit = " ميل/س"
+            }
+            "standard" -> {
+                temperatureUnit = " °ك"
+                windSpeedUnit = " م/ث"
+            }
+        }
     }
 
     private fun setEnglishUnits(units: String) {
