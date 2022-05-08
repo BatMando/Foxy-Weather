@@ -1,5 +1,7 @@
 package com.mando.foxyweatherapp.homeScreen.view
 
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.location.Geocoder
 import android.os.Bundle
@@ -24,7 +26,7 @@ import com.mando.foxyweatherapp.utitlity.longToDateAsString
 import java.io.IOException
 import java.util.*
 
-
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
 
     private lateinit var daysForecastRecyclerAdapter: Past7DaysForecastRecyclerAdapter
@@ -56,8 +58,7 @@ class HomeFragment : Fragment() {
     private lateinit var cloudsTv: TextView
     private lateinit var uvTv: TextView
     private lateinit var visibilityTv: TextView
-
-
+    private lateinit var progressDialog: ProgressDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +76,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+        progressDialog = ProgressDialog(context)
+        progressDialog.setTitle("Kotlin Progress Bar")
+        progressDialog.setMessage("Application is loading, please wait")
+        progressDialog.show()
+
         homeFragmentViewModelFactory = HomeFragmentViewModelFactory(Repository.getInstance(
             RemoteSource.getInstance(), requireContext()
         ))
@@ -87,7 +93,7 @@ class HomeFragment : Fragment() {
           //  Log.e("mando", "onViewCreated: ${weather.current.temp}" )
 
             setDataToViews(weather,requireContext())
-
+            progressDialog.hide()
         }
     }
 
@@ -101,10 +107,10 @@ class HomeFragment : Fragment() {
         tvDayTemp.text = "${weatherResponse.daily[0].temp.max.toInt()}$temperatureUnit/${weatherResponse.daily[0].temp.min.toInt()}$temperatureUnit"
         pressureTv.text = "${weatherResponse.current.pressure} hps"
         humidityTv.text = "${weatherResponse.current.humidity}%"
-        windTv.text = "${weatherResponse.current.windSpeed} $windSpeedUnit"
+        windTv.text = "${weatherResponse.current.windSpeed}$windSpeedUnit"
         cloudsTv.text = "${weatherResponse.current.clouds} hps"
         uvTv.text = "${weatherResponse.current.uvi.toInt()}%"
-        visibilityTv.text = "${weatherResponse.current.visibility} $windSpeedUnit"
+        visibilityTv.text = "${weatherResponse.current.visibility}$windSpeedUnit"
 
         daysForecastRecyclerAdapter.dailyWeather = weatherResponse.daily
         hoursForecastRecyclerAdapter.hourlyWeather = weatherResponse.hourly
