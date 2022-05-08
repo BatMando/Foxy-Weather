@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.2296875" />
         <entry key="app/src/main/res/layout/card_item_alerts.xml" value="0.25" />
         <entry key="app/src/main/res/layout/card_item_daily_forecast.xml" value="0.335" />
         <entry key="app/src/main/res/layout/card_item_favourites.xml" value="0.125" />

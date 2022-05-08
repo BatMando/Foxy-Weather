@@ -74,6 +74,9 @@ dependencies {
     //bottom nav
     implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7'
 
+    //lottie
+    def lottieVersion = "3.4.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
 
 }
