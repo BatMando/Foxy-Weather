@@ -16,4 +16,5 @@ data class WeatherResponse(
     @SerializedName("current") var current: CurrentWeather,
     @SerializedName("hourly") var hourly: List<HourlyWeather>,
     @SerializedName("daily") var daily: List<DailyWeather>,
+    @SerializedName("alerts") var alerts: List<AlertsResponse>?
 )

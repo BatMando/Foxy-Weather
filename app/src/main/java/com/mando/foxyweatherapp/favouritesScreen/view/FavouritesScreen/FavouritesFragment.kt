@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappmvvm.model.Repository
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.database.ConcreteLocalSource
@@ -31,7 +32,6 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
     private lateinit var favouritesRecyclerView: RecyclerView
     private lateinit var favViewModel: FavouritesFragmentViewModel
     private lateinit var favFactory : FavouritesFragmentViewModelFactory
-
     private lateinit var addFav: FloatingActionButton
 
 
@@ -113,8 +113,17 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
 
     override fun deleteFavourite(location: FavouriteLocation) {
 
-        favViewModel.deleteFavourite(location)
-        Log.e("mando", "openFavourite: ${location.locationName}")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.deleteConfirmation))
+            .setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
+                favViewModel.deleteFavourite(location)
+                dialog.dismiss()
+                Toast.makeText(requireContext(),"Deleted Successfully",Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun initView(view: View){

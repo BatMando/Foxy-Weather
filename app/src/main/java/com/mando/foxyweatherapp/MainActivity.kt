@@ -9,7 +9,7 @@ import com.gauravk.bubblenavigation.BubbleNavigationLinearView
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener
 import com.mando.foxyweatherapp.favouritesScreen.view.FavouritesScreen.FavouritesFragment
 import com.mando.foxyweatherapp.homeScreen.view.HomeFragment
-import com.mando.foxyweatherapp.notificationsScreen.view.NotificationsFragment
+import com.mando.foxyweatherapp.alertsScreen.view.AlertsFragment
 import com.mando.foxyweatherapp.settingsScreen.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             when (position) {
                 0 -> replaceFragments(HomeFragment())
                 1 -> replaceFragments(FavouritesFragment())
-                2 -> replaceFragments(NotificationsFragment())
+                2 -> replaceFragments(AlertsFragment())
                 3 -> replaceFragments(SettingsFragment())
             }
         })

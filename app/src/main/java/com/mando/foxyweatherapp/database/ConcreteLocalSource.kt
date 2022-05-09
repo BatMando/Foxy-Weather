@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
 import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
+import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 class ConcreteLocalSource (context: Context) : LocalSource {
     private val weatherDao :WeatherDao?
@@ -54,8 +56,11 @@ class ConcreteLocalSource (context: Context) : LocalSource {
         alertsDao?.deleteAlert(alert)
     }
 
-    override suspend fun allStoredAlerts(): LiveData<List<Alerts>> {
+    override fun allStoredAlerts(): LiveData<List<Alerts>> {
         return alertsDao?.getAllAlerts()!!
+    }
+    override fun getAllAlertsFlow(): Single<List<Alerts>> {
+        return alertsDao?.getAllAlertsFlow()!!
     }
 
 

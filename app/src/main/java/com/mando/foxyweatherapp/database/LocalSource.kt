@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
 import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
+import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface LocalSource {
     suspend fun insertWeather(weather: WeatherResponse)
@@ -15,6 +17,7 @@ interface LocalSource {
 
     fun insertAlert(alert: Alerts)
     fun deleteAlert(alert: Alerts)
-    suspend fun allStoredAlerts(): LiveData<List<Alerts>>
+    fun allStoredAlerts(): LiveData<List<Alerts>>
+    fun getAllAlertsFlow(): Single<List<Alerts>>
 
 }

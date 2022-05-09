@@ -10,7 +10,7 @@ import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
 
 @TypeConverters(Converters::class)
-@Database(entities = [WeatherResponse::class,FavouriteLocation::class,Alerts::class], version = 1)
+@Database(entities = [WeatherResponse::class,FavouriteLocation::class,Alerts::class], version = 2)
 abstract class AppDataBase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
     abstract fun alertsDao(): AlertsDao

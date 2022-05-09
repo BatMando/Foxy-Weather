@@ -1,20 +1,16 @@
-package com.mando.foxyweatherapp.notificationsScreen.view
+package com.mando.foxyweatherapp.alertsScreen.view
 
 import android.annotation.SuppressLint
-import android.graphics.Insets.add
 import android.view.*
 import android.view.View.OnCreateContextMenuListener
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
-import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
-import com.mando.foxyweatherapp.model.responseModels.DailyWeather
 import com.mando.foxyweatherapp.utitlity.*
 
-class AlarmsRecyclerAdapter( private val alarmDeleteListener: onAlarmDeleteListener) :RecyclerView.Adapter<AlarmsRecyclerAdapter.ViewHolder>(){
+class AlertsRecyclerAdapter(private val alertDeleteListener: onAlertDeleteListener) :RecyclerView.Adapter<AlertsRecyclerAdapter.ViewHolder>(){
 
     var alerts: List<Alerts> = arrayListOf()
 
@@ -38,12 +34,12 @@ class AlarmsRecyclerAdapter( private val alarmDeleteListener: onAlarmDeleteListe
         }
 
         override fun onMenuItemClick(item: MenuItem?): Boolean {
-            if (alarmDeleteListener != null) {
+            if (alertDeleteListener != null) {
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     when (item?.itemId) {
                         1 -> {
-                            alarmDeleteListener.deleteAlarm(alerts[pos])
+                            alertDeleteListener.deleteAlert(alerts[pos])
                             return true
                         }
                     }
@@ -67,9 +63,9 @@ class AlarmsRecyclerAdapter( private val alarmDeleteListener: onAlarmDeleteListe
     override fun onBindViewHolder(viewHolder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         viewHolder.startDate.text = longToDateAsString(alerts[position].startDate)
-        viewHolder.startTime.text = convertLongToTime(alerts[position].startDate)
+        viewHolder.startTime.text = convertLongToTime(alerts[position].alertTime)
         viewHolder.endDate.text = longToDateAsString(alerts[position].endDate)
-        viewHolder.endTime.text = convertLongToTime(alerts[position].endDate)
+        viewHolder.endTime.text = convertLongToTime(alerts[position].alertTime)
         viewHolder.constraintLayout.setOnCreateContextMenuListener(viewHolder)
     }
 }

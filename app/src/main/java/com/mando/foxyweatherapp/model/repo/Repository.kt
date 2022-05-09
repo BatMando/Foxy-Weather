@@ -9,6 +9,8 @@ import com.mando.foxyweatherapp.model.repo.RepositoryInterface
 import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
 
 import com.mando.foxyweatherapp.network.RemoteSource
+import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class Repository private constructor(var remoteSource: RemoteSource,var localSource: LocalSource,  var context: Context):
@@ -58,10 +60,13 @@ class Repository private constructor(var remoteSource: RemoteSource,var localSou
         localSource.deleteAlert(alert)
     }
 
-    override suspend fun allStoredAlerts(): LiveData<List<Alerts>> {
+    override fun allStoredAlerts(): LiveData<List<Alerts>> {
         return localSource.allStoredAlerts()
     }
 
+    override fun getAllAlertsFlow(): Single<List<Alerts>> {
+        return localSource.getAllAlertsFlow()
+    }
 
 
 }
