@@ -82,10 +82,6 @@ class SplashScreen : AppCompatActivity() {
     }
 
     private fun startMainScreen() {
-        getSharedPreferences(this).edit().apply {
-            putBoolean(getString(R.string.isMap), false)
-            apply()
-        }
             val localLang = getCurrentLocale(this)
             val languageLocale = getSharedPreferences(this).getString(
                 getString(R.string.languageSetting), localLang?.language) ?: localLang?.language
@@ -100,7 +96,6 @@ class SplashScreen : AppCompatActivity() {
             apply()
         }
         val intent = Intent(this, MapActivity::class.java)
-        intent.putExtra("isFavorite",false)
         startActivity(intent)
         finish()
     }

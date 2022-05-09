@@ -11,7 +11,7 @@ interface LocalSource {
 
     fun insertFavourite(fav: FavouriteLocation)
     fun deleteFavourite(fav: FavouriteLocation)
-    suspend fun allStoredFavourites(): LiveData<List<FavouriteLocation>>
+    fun allStoredFavourites(): LiveData<List<FavouriteLocation>>
 
     fun insertAlert(alert: Alerts)
     fun deleteAlert(alert: Alerts)

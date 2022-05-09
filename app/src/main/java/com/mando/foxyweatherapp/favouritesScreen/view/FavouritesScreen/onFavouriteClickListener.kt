@@ -1,4 +1,4 @@
-package com.mando.foxyweatherapp.favouritesScreen.view
+package com.mando.foxyweatherapp.favouritesScreen.view.FavouritesScreen
 
 import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 

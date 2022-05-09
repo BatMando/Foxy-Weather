@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener
-import com.mando.foxyweatherapp.favouritesScreen.view.FavouritesFragment
+import com.mando.foxyweatherapp.favouritesScreen.view.FavouritesScreen.FavouritesFragment
 import com.mando.foxyweatherapp.homeScreen.view.HomeFragment
 import com.mando.foxyweatherapp.notificationsScreen.view.NotificationsFragment
 import com.mando.foxyweatherapp.settingsScreen.SettingsFragment

@@ -20,9 +20,9 @@ class Repository private constructor(var remoteSource: RemoteSource,var localSou
             return instance?: Repository(remoteSource, localSource ,context)
         }
     }
-    override suspend fun getWeatherFromNetwork(lat:Double , lon:Double, units:String , lang:String): Response<WeatherResponse>{
+    override suspend fun getWeatherFromNetwork(lat:Double , lon:Double, units:String , lang:String ,isFavourite :Boolean ): Response<WeatherResponse>{
         val result =remoteSource.getWeatherFromNetwork(lat,lon, units, lang)
-        if (result.isSuccessful){
+        if (result.isSuccessful && !isFavourite){
             insertWeather(result.body()!!)
         }
 
@@ -46,7 +46,7 @@ class Repository private constructor(var remoteSource: RemoteSource,var localSou
         localSource.deleteFavourite(fav)
     }
 
-    override suspend fun allStoredFavourites(): LiveData<List<FavouriteLocation>> {
+    override fun allStoredFavourites(): LiveData<List<FavouriteLocation>> {
         return localSource.allStoredFavourites()
     }
 

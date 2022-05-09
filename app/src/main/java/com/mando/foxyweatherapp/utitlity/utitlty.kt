@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.location.Geocoder
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mando.foxyweatherapp.R
 import java.io.IOException
@@ -42,11 +43,12 @@ fun getIcon(imageString: String): Int {
 }
 
 fun getCityText(context: Context, lat: Double, lon: Double, language: String): String {
-    var city = "Unknown!"
+    var city = "Unknown Location"
     val geocoder = Geocoder(context, Locale(language))
     try {
         val addresses = geocoder.getFromLocation(lat, lon, 1)
         if (addresses.isNotEmpty()) {
+            Log.e("mando", "getCityText: ${addresses[0].featureName}" )
             city = "${addresses[0].adminArea}, ${addresses[0].countryName}"
         }
     } catch (e: IOException) {

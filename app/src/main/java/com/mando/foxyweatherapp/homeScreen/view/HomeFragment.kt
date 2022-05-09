@@ -145,6 +145,13 @@ class HomeFragment : Fragment() {
                         getString(R.string.unitsSetting),
                         "metric"
                     )!!
+
+                    val editor = getSharedPreferences(requireContext()).edit()
+                    editor.putFloat(getString(R.string.lat), latitude.toFloat())
+                    editor.putFloat(getString(R.string.lon), longitude.toFloat())
+                    editor.putBoolean(getString(R.string.firstTime), false)
+                    editor.putBoolean(getString(R.string.isMap), false)
+                    editor.apply()
                     try {
                         homeFragmentViewModel.getDataFromRemoteToLocal(
                             latitude,
