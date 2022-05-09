@@ -3,13 +3,12 @@ package com.mando.foxyweatherapp.utitlity
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
-import android.net.NetworkCapabilities
 import android.os.Build
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.mando.foxyweatherapp.R
+import com.mando.foxyweatherapp.model.alertsModel.Alerts
 import java.io.IOException
 import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -48,13 +47,35 @@ fun getCityText(context: Context, lat: Double, lon: Double, language: String): S
     try {
         val addresses = geocoder.getFromLocation(lat, lon, 1)
         if (addresses.isNotEmpty()) {
-            Log.e("mando", "getCityText: ${addresses[0].featureName}" )
-            city = "${addresses[0].adminArea}, ${addresses[0].countryName}"
+            //Log.e("mando", "getCityText: ${addresses[0].featureName} , ${addresses[0].subAdminArea}  " )
+            city = "${addresses[0].subAdminArea}, ${addresses[0].adminArea}, ${addresses[0].countryName}"
         }
     } catch (e: IOException) {
         e.printStackTrace()
     }
     return city
+}
+
+fun dateToLong(date: String?): Long {
+    val f = SimpleDateFormat("dd-MM-yyyy")
+    var milliseconds: Long = 0
+    try {
+        val d = f.parse(date)
+        milliseconds = d.time
+    } catch (e: ParseException) {
+        e.printStackTrace()
+    }
+    return milliseconds/1000
+}
+
+fun timeToSeconds(hour: Int, min: Int): Long {
+    return (((hour * 60 + min) * 60) - 7200 ).toLong()
+}
+
+fun getCurrentDay(): String? {
+    val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy")
+    val date = Date()
+    return dateFormat.format(date)
 }
 
 fun convertLongToTime(time: Long): String {
@@ -72,13 +93,21 @@ fun longToDateAsString(dateInMillis: Long): String {
     return dateFormat.format(d)
 }
 
+fun getCurrentTime(): Long {
+    val hour =
+        TimeUnit.HOURS.toMillis(Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toLong())
+    val minute =
+        TimeUnit.MINUTES.toMillis(Calendar.getInstance().get(Calendar.MINUTE).toLong())
+
+    return (hour + minute)
+}
+
 fun getSharedPreferences(context: Context): SharedPreferences {
     return context.getSharedPreferences(
         context.getString(R.string.shared_pref),
         Context.MODE_PRIVATE
     )
 }
-
 
 fun isSharedPreferencesLatAndLongNull(context: Context): Boolean {
     val myPref = getSharedPreferences(context)
@@ -87,13 +116,6 @@ fun isSharedPreferencesLatAndLongNull(context: Context): Boolean {
     return lat == 0.0f && long == 0.0f
 }
 
-fun updateSharedPreferences(context: Context,lat: Double,long: Double,location: String) {
-    val editor = getSharedPreferences(context).edit()
-    editor.putFloat(context.getString(R.string.lat), lat.toFloat())
-    editor.putFloat(context.getString(R.string.lon), long.toFloat())
-    editor.putString(context.getString(R.string.location), location)
-    editor.apply()
-}
 
 
 fun getCurrentLocale(context: Context): Locale? {

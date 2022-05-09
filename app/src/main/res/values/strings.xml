@@ -32,4 +32,14 @@
     <string name="plsCheckMethod">Please Check One Method</string>
     <string name="noInternetConnection">No Internet Connection</string>
     <string name="firstTime">firstTime</string>
+    <string name="deleteConfirmation">Do you Want To Delete This</string>
+    <string name="add_alert">Add Alert</string>
+    <string name="Add">Add</string>
+    <string name="notification">notification</string>
+    <string name="alarm">alarm</string>
+    <string name="ok">Ok</string>
+    <string name="overlay_title">Permission Required</string>
+    <string name="overlay_message">Please Allow Overlay Permission</string>
+    <string name="overlay_postive_button">Ok</string>
+    <string name="overlay_negative_button">Cancel</string>
 </resources>

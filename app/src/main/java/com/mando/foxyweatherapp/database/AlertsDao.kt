@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
 import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
+import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,5 +19,9 @@ interface AlertsDao {
 
     @Delete
     fun deleteAlert(alert: Alerts)
+
+    @Query("select * from alerts")
+    fun getAllAlertsFlow(): Single<List<Alerts>>
+
 
 }

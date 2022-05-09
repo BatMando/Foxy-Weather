@@ -2,10 +2,7 @@ package com.mando.foxyweatherapp.database
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.mando.foxyweatherapp.model.responseModels.CurrentWeather
-import com.mando.foxyweatherapp.model.responseModels.DailyWeather
-import com.mando.foxyweatherapp.model.responseModels.HourlyWeather
-import com.mando.foxyweatherapp.model.responseModels.Weather
+import com.mando.foxyweatherapp.model.responseModels.*
 
 class Converters {
 
@@ -36,5 +33,24 @@ class Converters {
     @TypeConverter
     fun jsonToWeatherList(weatherString: String) =
         Gson().fromJson(weatherString, Array<Weather>::class.java).toList()
+
+    @TypeConverter
+    fun alertListToJson(alertList: List<AlertsResponse>?) = Gson().toJson(alertList)
+
+    @TypeConverter
+    fun jsonToAlertList(alertString: String?): List<AlertsResponse>? {
+        alertString?.let {
+            return Gson().fromJson(alertString, Array<AlertsResponse>::class.java)?.toList()
+        }
+        return emptyList()
+    }
+
+    @TypeConverter
+    fun alertDaysListToJson(alertDays: List<String>) = Gson().toJson(alertDays)
+
+    @TypeConverter
+    fun jsonToAlertDaysList(alertDays: String) =
+        Gson().fromJson(alertDays, Array<String>::class.java).toList()
+
 
 }
