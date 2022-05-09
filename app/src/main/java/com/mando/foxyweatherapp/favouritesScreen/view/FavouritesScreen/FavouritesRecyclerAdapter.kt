@@ -1,18 +1,13 @@
-package com.mando.foxyweatherapp.favouritesScreen.view
+package com.mando.foxyweatherapp.favouritesScreen.view.FavouritesScreen
 
 import android.annotation.SuppressLint
-import android.graphics.Insets.add
 import android.view.*
 import android.view.View.OnCreateContextMenuListener
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
-import com.mando.foxyweatherapp.model.responseModels.DailyWeather
-import com.mando.foxyweatherapp.utitlity.getDayOfWeek
-import com.mando.foxyweatherapp.utitlity.getIcon
 
 class FavouritesRecyclerAdapter(private val favouriteClickListener: onFavouriteClickListener, private val favouriteDeleteListener: onFavouriteDeleteListener) :RecyclerView.Adapter<FavouritesRecyclerAdapter.ViewHolder>(){
 

@@ -42,7 +42,7 @@ class ConcreteLocalSource (context: Context) : LocalSource {
         favouritesDao?.deleteFavourite(fav)
     }
 
-    override suspend fun allStoredFavourites(): LiveData<List<FavouriteLocation>> {
+    override fun allStoredFavourites(): LiveData<List<FavouriteLocation>> {
         return favouritesDao?.getAllFavourites()!!
     }
 

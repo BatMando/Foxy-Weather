@@ -7,14 +7,14 @@ import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
 import retrofit2.Response
 
 interface RepositoryInterface {
-    suspend fun getWeatherFromNetwork(lat:Double , lon:Double, units:String , lang:String): Response<WeatherResponse>
+    suspend fun getWeatherFromNetwork(lat:Double, lon:Double, units:String, lang:String, isFavourite: Boolean = false): Response<WeatherResponse>
 
     suspend fun insertWeather(weather: WeatherResponse)
     suspend fun allStoredWeather(): WeatherResponse
 
     fun insertFavourite(fav: FavouriteLocation)
     fun deleteFavourite(fav: FavouriteLocation)
-    suspend fun allStoredFavourites(): LiveData<List<FavouriteLocation>>
+    fun allStoredFavourites(): LiveData<List<FavouriteLocation>>
 
     fun insertAlert(alert: Alerts)
     fun deleteAlert(alert: Alerts)

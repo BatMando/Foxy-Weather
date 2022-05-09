@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mando.foxyweatherapp.R
-import com.mando.foxyweatherapp.favouritesScreen.view.FavouritesRecyclerAdapter
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
-import com.mando.foxyweatherapp.model.favouritesModel.FavouriteLocation
 
 class NotificationsFragment : Fragment() , onAlarmDeleteListener{
 

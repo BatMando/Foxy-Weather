@@ -97,6 +97,7 @@ class MapActivity : AppCompatActivity() {
         editor.putFloat(getString(R.string.lat), lat.toFloat())
         editor.putFloat(getString(R.string.lon), long.toFloat())
         editor.putBoolean("firstTime", false)
+        editor.putBoolean(getString(R.string.isMap), true)
         editor.apply()
         startActivity(Intent(this,MainActivity::class.java))
         finish()
