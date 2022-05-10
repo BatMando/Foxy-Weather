@@ -84,8 +84,8 @@ class DisplayFavouriteActivity : AppCompatActivity() {
 
     private fun openLoadingDialog(){
         progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Application is loading, please wait")
+        progressDialog.setTitle(getString(R.string.loading))
+        progressDialog.setMessage(getString(R.string.applicationLoading))
         progressDialog.show()
     }
 

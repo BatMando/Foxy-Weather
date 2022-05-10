@@ -177,7 +177,7 @@ class AddAlarmActivity : AppCompatActivity() {
         }
         else
         {
-            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.fillRequired), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -119,16 +119,16 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
             .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                 alertViewModel.deleteAlert(alerts)
                 dialog.dismiss()
-                Toast.makeText(requireContext(),"Deleted Successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),getString(R.string.deleteSuccess), Toast.LENGTH_SHORT).show()
             }
             .show()
     }
     private fun checkFirstTime(): Boolean {
-        return getSharedPreferences(requireContext()).getBoolean("permission", true)
+        return getSharedPreferences(requireContext()).getBoolean(getString(R.string.permission), true)
     }
 
     private fun setNotFirstTime() {
-        getSharedPreferences(requireContext()).edit().putBoolean("permission", false).apply()
+        getSharedPreferences(requireContext()).edit().putBoolean(getString(R.string.permission), false).apply()
     }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun openAddAlertActivity() {

@@ -91,8 +91,8 @@ class HomeFragment : Fragment() {
         initView(view)
 
         progressDialog = ProgressDialog(context)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Application is loading, please wait")
+        progressDialog.setTitle(getString(R.string.loading))
+        progressDialog.setMessage(getString(R.string.applicationLoading))
         progressDialog.show()
 
         homeFragmentViewModelFactory = HomeFragmentViewModelFactory(

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">الجو المكار</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">الرئيسية</string>
+    <string name="favorites">المفضلة</string>
+    <string name="notifications">الاشعارات</string>
+    <string name="settings">الاعدادات</string>
+    <string name="Alarms">التنبيهات</string>
+    <string name="choose_language">اختر اللغة</string>
+    <string name="english">الانجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="choose_location_method">اختر طريقة تحديد الموقع</string>
+    <string name="gps">GPS</string>
+    <string name="map">الخريطة</string>
+    <string name="units">وحدات القياس</string>
+    <string name="unit_celsius">سيلزيوس</string>
+    <string name="unit_fahrenhite">فهرنهايت</string>
+    <string name="btn_save">حفظ</string>
+    <string name="btn_Done">تم</string>
+    <!--    shared_pref-->
+    <string name="lat">lat</string>
+    <!--    shared_pref-->
+    <string name="languageSetting">languageSetting</string>
+    <!--    shared_pref-->
+    <string name="unitsSetting">unitsSetting</string>
+    <!--    shared_pref-->
+    <string name="lon">lon</string>
+    <!--    shared_pref-->
+    <string name="shared_pref">shared_pref</string>
+    <string name="location">الموقع</string>
+    <string name="map_dialog_title">فتح الخريطة</string>
+    <string name="no">لا</string>
+    <string name="yes">نعم</string>
+    <!--    shared_pref-->
+    <string name="isMap">isMap</string>
+    <string name="cancel">الغاء</string>
+    <string name="plsCheckMethod">الرجاء اختيار طريقة</string>
+    <string name="noInternetConnection">لا يوجد انترنت</string>
+    <!--    shared_pref-->
+    <string name="firstTime">firstTime</string>
+    <string name="deleteConfirmation">هل تريد مسح ذلك</string>
+    <string name="add_alert">اضافة تنبيه</string>
+    <string name="Add">اضافة</string>
+    <string name="notification">اشعار</string>
+    <string name="alarm">تنبه</string>
+    <string name="ok">موافق</string>
+    <string name="overlay_title"> مطلوب الاذن</string>
+    <string name="overlay_message">رجاء السماح لاذن عرض فوق التطبيقات الاخري</string>
+    <string name="overlay_postive_button">موافق</string>
+    <string name="overlay_negative_button">الغاء</string>
+    <string name="add_alarm">اضف تنبيه</string>
+    <string name="alarm_duration">فترة التنبيه</string>
+    <string name="from">من</string>
+    <string name="to">الي</string>
+    <string name="alarm_time">وقت التنبيه</string>
+    <string name="time">الوقت</string>
+    <string name="alarm_sound">صوت التنبيه</string>
+    <string name="notificationTxt">اشعار</string>
+    <string name="next_24_hours_forecast">طقس ال٢٤ ساعة القادمين</string>
+    <string name="next_7_days_forecast">طقس ال٧ ايام القادمين</string>
+    <string name="pressure">ضغط الجو</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="wind">سرعة الرياح</string>
+    <string name="cloud">السحب</string>
+    <string name="ultra_violet">الاشعة فوق البنفسجية</string>
+    <string name="visibility">وضوح الرؤية</string>
+    <string name="weather_details">تفاصيل الطقس</string>
+    <!--    shared_pref-->
+    <string name="permission">permission</string>
+    <string name="deleteSuccess">تم المسح بنجاح</string>
+    <string name="fillRequired">الرجاء ملئ جميع المعلومات المطلوبة</string>
+    <string name="loading">جار التحميل</string>
+    <string name="applicationLoading">يتم تحميل التطبيق ، يرجى الانتظار</string>
+</resources>

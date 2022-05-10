@@ -10,7 +10,6 @@ import com.example.moviesappmvvm.model.Repository
 import com.mando.foxyweatherapp.database.ConcreteLocalSource
 import com.mando.foxyweatherapp.model.alertsModel.Alerts
 import com.mando.foxyweatherapp.network.RemoteSource
-import com.mando.foxyweatherapp.utitlity.checkTime
 import com.mando.foxyweatherapp.utitlity.getCurrentDay
 import io.reactivex.Single
 import kotlinx.coroutines.Dispatchers

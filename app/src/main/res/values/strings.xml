@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Foxy Weather App</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="favorites">Favorites</string>
@@ -18,19 +17,26 @@
     <string name="unit_fahrenhite">Fehrenhite</string>
     <string name="btn_save">Save</string>
     <string name="btn_Done">Done</string>
+    <!--    shared_pref-->
     <string name="lat">lat</string>
+    <!--    shared_pref-->
     <string name="languageSetting">languageSetting</string>
+    <!--    shared_pref-->
     <string name="unitsSetting">unitsSetting</string>
+    <!--    shared_pref-->
     <string name="lon">lon</string>
+    <!--    shared_pref-->
     <string name="shared_pref">shared_pref</string>
     <string name="location">location</string>
     <string name="map_dialog_title">Open Map</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <!--    shared_pref-->
     <string name="isMap">isMap</string>
     <string name="cancel">Cancel</string>
     <string name="plsCheckMethod">Please Check One Method</string>
     <string name="noInternetConnection">No Internet Connection</string>
+    <!--    shared_pref-->
     <string name="firstTime">firstTime</string>
     <string name="deleteConfirmation">Do you Want To Delete This</string>
     <string name="add_alert">Add Alert</string>
@@ -42,4 +48,27 @@
     <string name="overlay_message">Please Allow Overlay Permission</string>
     <string name="overlay_postive_button">Ok</string>
     <string name="overlay_negative_button">Cancel</string>
+    <string name="add_alarm">Add Alarm</string>
+    <string name="alarm_duration">Alarm Duration</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="alarm_time">Alarm Time</string>
+    <string name="time">Time</string>
+    <string name="alarm_sound">Alarm Sound</string>
+    <string name="notificationTxt">Notification</string>
+    <string name="next_24_hours_forecast">Next 24 Hours Forecast</string>
+    <string name="next_7_days_forecast">Next 7 Days Forecast</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="cloud">Cloud</string>
+    <string name="ultra_violet">Ultra Violet</string>
+    <string name="visibility">Visibility</string>
+    <string name="weather_details">Weather Details</string>
+    <!--    shared_pref-->
+    <string name="permission">permission</string>
+    <string name="deleteSuccess">Deleted Successfully</string>
+    <string name="fillRequired">Please Fill Required Fields</string>
+    <string name="loading">Loading</string>
+    <string name="applicationLoading">Application is loading, please wait</string>
 </resources>

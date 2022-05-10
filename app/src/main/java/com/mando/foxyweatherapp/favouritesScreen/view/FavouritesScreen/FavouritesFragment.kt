@@ -107,8 +107,6 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
             Toast.makeText(requireContext(), getString(R.string.noInternetConnection), Toast.LENGTH_SHORT).show()
         }
 
-
-        Log.e("mando", "openFavourite: ${location.locationName}")
     }
 
     override fun deleteFavourite(location: FavouriteLocation) {
@@ -121,7 +119,7 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
             .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                 favViewModel.deleteFavourite(location)
                 dialog.dismiss()
-                Toast.makeText(requireContext(),"Deleted Successfully",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),getString(R.string.deleteSuccess),Toast.LENGTH_SHORT).show()
             }
             .show()
     }
