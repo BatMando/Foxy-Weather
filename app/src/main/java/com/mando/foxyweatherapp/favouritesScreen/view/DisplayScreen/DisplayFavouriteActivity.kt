@@ -84,8 +84,8 @@ class DisplayFavouriteActivity : AppCompatActivity() {
 
     private fun openLoadingDialog(){
         progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Application is loading, please wait")
+        progressDialog.setTitle(getString(R.string.loading))
+        progressDialog.setMessage(getString(R.string.applicationLoading))
         progressDialog.show()
     }
 
@@ -201,7 +201,7 @@ class DisplayFavouriteActivity : AppCompatActivity() {
             visibilityTv.text = "${weatherResponse.current.visibility}$windSpeedUnit"
         }
         tvLocation.text = getCityText(context, weatherResponse.lat, weatherResponse.lon, language)
-        tvDate.text = longToDateAsString(weatherResponse.current.dt)
+        tvDate.text = longToDateAsString(weatherResponse.current.dt,language)
         tvTempState.text = weatherResponse.current.weather[0].description
         tvTempUnit.text = temperatureUnit
 

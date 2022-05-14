@@ -1,6 +1,7 @@
 package com.mando.foxyweatherapp.alertsScreen.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.*
 import android.view.View.OnCreateContextMenuListener
 import android.widget.TextView
@@ -13,6 +14,8 @@ import com.mando.foxyweatherapp.utitlity.*
 class AlertsRecyclerAdapter(private val alertDeleteListener: onAlertDeleteListener) :RecyclerView.Adapter<AlertsRecyclerAdapter.ViewHolder>(){
 
     var alerts: List<Alerts> = arrayListOf()
+    private var language: String = "en"
+
 
     inner class ViewHolder(private val itemView : View): RecyclerView.ViewHolder(itemView) ,
         OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
@@ -57,15 +60,20 @@ class AlertsRecyclerAdapter(private val alertDeleteListener: onAlertDeleteListen
     }
 
 
+    fun setValuesFromSharedPreferences(context: Context) {
+        getSharedPreferences(context).apply {
+            language = getString(context.getString(R.string.languageSetting), "en") ?: "en"
+        }
+    }
 
     override fun getItemCount(): Int = alerts.size
 
     override fun onBindViewHolder(viewHolder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
-        viewHolder.startDate.text = longToDateAsString(alerts[position].startDate)
-        viewHolder.startTime.text = convertLongToTime(alerts[position].alertTime)
-        viewHolder.endDate.text = longToDateAsString(alerts[position].endDate)
-        viewHolder.endTime.text = convertLongToTime(alerts[position].alertTime)
+        viewHolder.startDate.text = longToDateAsString(alerts[position].startDate,language)
+        viewHolder.startTime.text = convertLongToTime(alerts[position].alertTime,language)
+        viewHolder.endDate.text = longToDateAsString(alerts[position].endDate,language)
+        viewHolder.endTime.text = convertLongToTime(alerts[position].alertTime,language)
         viewHolder.constraintLayout.setOnCreateContextMenuListener(viewHolder)
     }
 }

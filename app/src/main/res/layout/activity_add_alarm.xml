@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Alarm"
+        android:text="@string/add_alarm"
         android:textColor="@color/white"
         android:gravity="center"
         android:layout_margin="16dp"
@@ -69,7 +69,7 @@
                     android:layout_margin="10dp"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="16dp"
-                    android:text="Alarm Duration"
+                    android:text="@string/alarm_duration"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
                         android:enabled="true"
                         android:focusable="false"
                         android:fontFamily="@font/roboto_regular"
-                        android:hint="From"
+                        android:hint="@string/from"
                         android:inputType="text"
                         tools:ignore="SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -126,7 +126,7 @@
                         android:enabled="true"
                         android:focusable="false"
                         android:fontFamily="@font/roboto_regular"
-                        android:hint="To"
+                        android:hint="@string/to"
                         android:inputType="text"
                         tools:ignore="SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -152,7 +152,7 @@
                     android:layout_margin="10dp"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="16dp"
-                    android:text="Alarm Time"
+                    android:text="@string/alarm_time"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +181,7 @@
                         android:enabled="true"
                         android:focusable="false"
                         android:fontFamily="@font/roboto_regular"
-                        android:hint="Time"
+                        android:hint="@string/time"
                         android:inputType="text"
                         tools:ignore="SpeakableTextPresentCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -206,7 +206,7 @@
                     android:layout_margin="10dp"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="16dp"
-                    android:text="Alarm Sound"
+                    android:text="@string/alarm_sound"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -230,7 +230,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/roboto_regular"
                         android:buttonTint="@color/white"
-                        android:text="Notification"
+                        android:text="@string/notificationTxt"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -240,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Alarm"
+                        android:text="@string/alarm"
                         android:buttonTint="@color/white"
 
                         android:textColor="@color/white"

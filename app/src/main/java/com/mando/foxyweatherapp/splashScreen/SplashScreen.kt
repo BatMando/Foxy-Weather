@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.*
+import com.google.android.material.snackbar.Snackbar
 import com.mando.foxyweatherapp.MainActivity
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.map.view.MapActivity
@@ -25,11 +26,11 @@ import com.mando.foxyweatherapp.utitlity.getSharedPreferences
 import kotlinx.coroutines.*
 import java.util.*
 
-class SplashScreen : AppCompatActivity() {
+class SplashScreen : AppCompatActivity() ,NetworkChangeReceiver.ConnectivityReceiverListener{
     private val parentJob = Job()
     lateinit var firstInitDialog: Dialog
-    private var locationFromMap: Boolean = false
-    private var oldLocationSetting: Boolean = false
+
+    private var flagNoConnection: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,10 +83,6 @@ class SplashScreen : AppCompatActivity() {
     }
 
     private fun startMainScreen() {
-            val localLang = getCurrentLocale(this)
-            val languageLocale = getSharedPreferences(this).getString(
-                getString(R.string.languageSetting), localLang?.language) ?: localLang?.language
-            setLocale(languageLocale!!)
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -100,25 +97,30 @@ class SplashScreen : AppCompatActivity() {
         finish()
     }
 
-    private fun setLocale(lang: String) {
-        val myLocale = Locale(lang)
-        Locale.setDefault(myLocale)
-        val res: Resources = resources
-        val dm: DisplayMetrics = res.displayMetrics
-        val conf: Configuration = res.configuration
-        conf.locale = myLocale
-        conf.setLayoutDirection(myLocale)
-        res.updateConfiguration(conf, dm)
-    }
+
 
     private fun isFirstTime(): Boolean {
         return getSharedPreferences(this).getBoolean("firstTime", true)
     }
 
     private fun initConnectionListener() {
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        registerReceiver(NetworkChangeReceiver(this), intentFilter)
+
+        NetworkChangeReceiver.connectivityReceiverListener = this
+        this.registerReceiver(NetworkChangeReceiver(),
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
     }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+
+            if (isConnected) {
+                if (flagNoConnection) {
+
+                    flagNoConnection = false
+                }
+            } else {
+                flagNoConnection = true
+            }
+}
 
 }

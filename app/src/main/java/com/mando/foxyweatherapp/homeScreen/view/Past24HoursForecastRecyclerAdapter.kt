@@ -1,6 +1,7 @@
 package com.mando.foxyweatherapp.homeScreen.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,12 @@ import com.mando.foxyweatherapp.model.responseModels.HourlyWeather
 import com.mando.foxyweatherapp.utitlity.convertLongToTime
 import com.mando.foxyweatherapp.utitlity.getDayOfWeek
 import com.mando.foxyweatherapp.utitlity.getIcon
+import com.mando.foxyweatherapp.utitlity.getSharedPreferences
 
 class Past24HoursForecastRecyclerAdapter :RecyclerView.Adapter<Past24HoursForecastRecyclerAdapter.ViewHolder>(){
 
+    private var language: String = "en"
+    private var units: String = "metric"
     var hourlyWeather: List<HourlyWeather> = arrayListOf()
 
     inner class ViewHolder(private val itemView : View): RecyclerView.ViewHolder(itemView){
@@ -31,12 +35,18 @@ class Past24HoursForecastRecyclerAdapter :RecyclerView.Adapter<Past24HoursForeca
         return ViewHolder(view)
     }
 
+    fun setValuesFromSharedPreferences(context: Context) {
+        getSharedPreferences(context).apply {
+            language = getString(context.getString(R.string.languageSetting), "en") ?: "en"
+            units = getString(context.getString(R.string.unitsSetting), "metric") ?: "metric"
+        }
+    }
 
     override fun getItemCount(): Int = hourlyWeather.size
 
     override fun onBindViewHolder(viewHolder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         viewHolder.img.setImageResource(getIcon(hourlyWeather[position].weather[0].icon))
-        viewHolder.day.text = convertLongToTime(hourlyWeather[position].dt)
+        viewHolder.day.text = convertLongToTime(hourlyWeather[position].dt,language)
         viewHolder.temp.text = "${hourlyWeather[position].temp.toInt()}°C"
  }
 }

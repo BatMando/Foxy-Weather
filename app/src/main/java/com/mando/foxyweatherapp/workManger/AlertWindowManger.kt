@@ -30,7 +30,6 @@ class AlertWindowManger (
     lateinit var customNotificationDialogView: View
 
 
-
     fun setMyWindowManger() {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

@@ -83,6 +83,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
         alertViewModel.getAlertsFromDatabase().observe(this){
             if (it !=null)
                 alarmsRecyclerAdapter.alerts = it
+            alarmsRecyclerAdapter.setValuesFromSharedPreferences(requireContext())
             alarmsRecyclerAdapter.notifyDataSetChanged()
         }
     }
@@ -119,16 +120,16 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
             .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                 alertViewModel.deleteAlert(alerts)
                 dialog.dismiss()
-                Toast.makeText(requireContext(),"Deleted Successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),getString(R.string.deleteSuccess), Toast.LENGTH_SHORT).show()
             }
             .show()
     }
     private fun checkFirstTime(): Boolean {
-        return getSharedPreferences(requireContext()).getBoolean("permission", true)
+        return getSharedPreferences(requireContext()).getBoolean(getString(R.string.permission), true)
     }
 
     private fun setNotFirstTime() {
-        getSharedPreferences(requireContext()).edit().putBoolean("permission", false).apply()
+        getSharedPreferences(requireContext()).edit().putBoolean(getString(R.string.permission), false).apply()
     }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun openAddAlertActivity() {
@@ -161,10 +162,11 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + requireContext().packageName)
                     )
+                    dialog.dismiss()
                     // request permission via start activity for result
                     startActivityForResult(intent, 1)
                     //It will call onActivityResult Function After you press Yes/No and go Back after giving permission
-                    dialog.dismiss()
+
 
                 }.setNegativeButton(
                     getString(R.string.overlay_negative_button)

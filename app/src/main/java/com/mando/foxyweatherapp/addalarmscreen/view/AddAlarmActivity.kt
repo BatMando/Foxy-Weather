@@ -2,6 +2,7 @@ package com.mando.foxyweatherapp.addalarmscreen.view
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -43,6 +44,7 @@ class AddAlarmActivity : AppCompatActivity() {
     var endDate:Long = 0
     lateinit var startDateSt:String
     lateinit var endDateSt:String
+    private var language: String = "en"
 
     var alertTime :Long = 0
     lateinit var alertType :String
@@ -66,11 +68,14 @@ class AddAlarmActivity : AppCompatActivity() {
         getSharedPreferences(this).apply {
             lat = getFloat(getString(R.string.lat), 0.0f).toDouble()
             lon = getFloat(getString(R.string.lon), 0.0f).toDouble()
+            language = getString(getString(R.string.languageSetting), "en") ?: "en"
+
         }
         initView()
         initViewModel()
         setListeners()
     }
+
 
     private fun setListeners() {
         saveBtn.setOnClickListener {
@@ -136,7 +141,7 @@ class AddAlarmActivity : AppCompatActivity() {
         val timePickerDialog = TimePickerDialog(this,
             { viewTimePicker, hour, minute ->
                 alertTime = timeToSeconds(hour, minute)
-                alarmTimeEdit.editText?.setText(convertLongToTime(alertTime))
+                alarmTimeEdit.editText?.setText(convertLongToTime(alertTime,language))
 
             }, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], true
         )
@@ -177,7 +182,7 @@ class AddAlarmActivity : AppCompatActivity() {
         }
         else
         {
-            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.fillRequired), Toast.LENGTH_SHORT).show()
         }
     }
 

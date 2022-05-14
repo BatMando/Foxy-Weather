@@ -1,6 +1,8 @@
 package com.mando.foxyweatherapp.favouritesScreen.view.FavouritesScreen
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,7 +27,7 @@ import com.mando.foxyweatherapp.network.RemoteSource
 import com.mando.foxyweatherapp.utitlity.broadCast.NetworkChangeReceiver
 
 
-class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteClickListener {
+class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteClickListener ,NetworkChangeReceiver.ConnectivityReceiverListener{
 
     private lateinit var favouritesRecyclerAdapter: FavouritesRecyclerAdapter
     private lateinit var favouritesLayoutManger : RecyclerView.LayoutManager
@@ -33,6 +35,8 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
     private lateinit var favViewModel: FavouritesFragmentViewModel
     private lateinit var favFactory : FavouritesFragmentViewModelFactory
     private lateinit var addFav: FloatingActionButton
+    private var flagNoConnection: Boolean = false
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,20 +53,23 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initView(view)
-        handleAddBtnVisibility()
-        setListeners()
+        NetworkChangeReceiver.connectivityReceiverListener = this
+        activity?.registerReceiver(NetworkChangeReceiver(),
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
         initViewModel()
         observeFavourites()
 
     }
 
     private fun handleAddBtnVisibility(){
-        if (NetworkChangeReceiver.isThereInternetConnection){
+        if (!flagNoConnection){
             addFav.visibility = View.VISIBLE
         }
         else {
-            addFav.visibility = View.GONE
+
         }
 
     }
@@ -82,21 +89,16 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
     }
     private fun setListeners(){
         addFav.setOnClickListener {
-            if (NetworkChangeReceiver.isThereInternetConnection){
                 val intent = Intent(requireContext(), MapActivity::class.java)
                 intent.putExtra("isFavorite",true)
                 startActivity(intent)
             }
-            else{
-                Toast.makeText(requireContext(), getString(R.string.noInternetConnection), Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
 
     override fun openFavourite(location: FavouriteLocation) {
 
-        if (NetworkChangeReceiver.isThereInternetConnection){
+        if (!flagNoConnection){
             val intent = Intent(requireContext(), DisplayFavouriteActivity::class.java)
             intent.putExtra("lat",location.lat)
             intent.putExtra("lon",location.lon)
@@ -107,8 +109,6 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
             Toast.makeText(requireContext(), getString(R.string.noInternetConnection), Toast.LENGTH_SHORT).show()
         }
 
-
-        Log.e("mando", "openFavourite: ${location.locationName}")
     }
 
     override fun deleteFavourite(location: FavouriteLocation) {
@@ -121,7 +121,7 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
             .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                 favViewModel.deleteFavourite(location)
                 dialog.dismiss()
-                Toast.makeText(requireContext(),"Deleted Successfully",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),getString(R.string.deleteSuccess),Toast.LENGTH_SHORT).show()
             }
             .show()
     }
@@ -135,6 +135,19 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
         favouritesRecyclerView.adapter = favouritesRecyclerAdapter
     }
 
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        if (isConnected) {
+            if (flagNoConnection) {
+                addFav.visibility = View.VISIBLE
+                setListeners()
+                flagNoConnection = false
+            }
+        } else {
+            addFav.visibility = View.GONE
+            Toast.makeText(requireContext(),getString(R.string.noInternetConnection),Toast.LENGTH_SHORT).show()
+            flagNoConnection = true
+        }
+    }
 
 
 }
