@@ -78,18 +78,18 @@ fun getCurrentDay(): String? {
     return dateFormat.format(date)
 }
 
-fun convertLongToTime(time: Long): String {
+fun convertLongToTime(time: Long, language: String): String {
     val date = Date(TimeUnit.SECONDS.toMillis(time))
-    val format = SimpleDateFormat("h:mm a", Locale.ENGLISH)
+    val format = SimpleDateFormat("h:mm a",  Locale(language))
     return format.format(date)
 }
-fun getDayOfWeek(timestamp: Long): String {
-    return SimpleDateFormat("EEEE", Locale.ENGLISH).format(timestamp * 1000)
+fun getDayOfWeek(timestamp: Long, language: String): String {
+    return SimpleDateFormat("EEEE",  Locale(language)).format(timestamp * 1000)
 }
 
-fun longToDateAsString(dateInMillis: Long): String {
+fun longToDateAsString(dateInMillis: Long, language: String): String {
     val d = Date(dateInMillis * 1000)
-    val dateFormat: DateFormat = SimpleDateFormat("d MMM, yyyy", Locale.ENGLISH)
+    val dateFormat: DateFormat = SimpleDateFormat("d MMM, yyyy",  Locale(language))
     return dateFormat.format(d)
 }
 
@@ -101,6 +101,15 @@ fun getCurrentTime(): Long {
 
     return (hour + minute)
 }
+
+fun checkIfNight(time:Long): Boolean {
+    val date = Date(TimeUnit.SECONDS.toMillis(time))
+    val format = SimpleDateFormat("kk", Locale.ENGLISH)
+    if (format.format(date).toInt()>=18 || format.format(date).toInt()<4)
+        return true
+    return (false)
+}
+
 
 fun getSharedPreferences(context: Context): SharedPreferences {
     return context.getSharedPreferences(

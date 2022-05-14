@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 class MyPeriodicManager (private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
-    lateinit var list :List<Alerts>
+    var list :List<Alerts> = listOf()
     var delay: Long = 0
     var timeNow: Long = 0
     val repository = Repository.getInstance(
@@ -46,11 +46,6 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
                 Log.e("mando", "getAllAlertsFlow: ${list.size}" )
             }
         }
-//        repository.allStoredAlerts().observe(context as LifecycleOwner){
-//            if (it !=null)
-//                list = it
-//            Log.e("mando", "setAlertsToList: ${list.size}" )
-//        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -60,7 +55,6 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
 
         if (list != null) {
             Log.e("MyPeriodicManager","list not null")
-
             for (alert in list) {
                 if (alert.alertDays.stream()
                         .anyMatch { s -> s.contains(getCurrentDay().toString()) }) {

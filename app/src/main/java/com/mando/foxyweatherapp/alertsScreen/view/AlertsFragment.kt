@@ -83,6 +83,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
         alertViewModel.getAlertsFromDatabase().observe(this){
             if (it !=null)
                 alarmsRecyclerAdapter.alerts = it
+            alarmsRecyclerAdapter.setValuesFromSharedPreferences(requireContext())
             alarmsRecyclerAdapter.notifyDataSetChanged()
         }
     }
@@ -161,10 +162,11 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + requireContext().packageName)
                     )
+                    dialog.dismiss()
                     // request permission via start activity for result
                     startActivityForResult(intent, 1)
                     //It will call onActivityResult Function After you press Yes/No and go Back after giving permission
-                    dialog.dismiss()
+
 
                 }.setNegativeButton(
                     getString(R.string.overlay_negative_button)

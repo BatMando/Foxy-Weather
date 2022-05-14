@@ -21,6 +21,7 @@
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toolbar_main.xml" value="0.24375" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
       </map>
     </option>
   </component>

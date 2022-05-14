@@ -201,7 +201,7 @@ class DisplayFavouriteActivity : AppCompatActivity() {
             visibilityTv.text = "${weatherResponse.current.visibility}$windSpeedUnit"
         }
         tvLocation.text = getCityText(context, weatherResponse.lat, weatherResponse.lon, language)
-        tvDate.text = longToDateAsString(weatherResponse.current.dt)
+        tvDate.text = longToDateAsString(weatherResponse.current.dt,language)
         tvTempState.text = weatherResponse.current.weather[0].description
         tvTempUnit.text = temperatureUnit
 
