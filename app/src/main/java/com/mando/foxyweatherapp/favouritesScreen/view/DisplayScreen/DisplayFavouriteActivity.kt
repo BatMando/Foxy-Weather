@@ -205,8 +205,11 @@ class DisplayFavouriteActivity : AppCompatActivity() {
         tvTempState.text = weatherResponse.current.weather[0].description
         tvTempUnit.text = temperatureUnit
 
-        daysForecastRecyclerAdapter.dailyWeather = weatherResponse.daily
+        daysForecastRecyclerAdapter.dailyWeather = weatherResponse.daily.drop(1)
         hoursForecastRecyclerAdapter.hourlyWeather = weatherResponse.hourly
+        daysForecastRecyclerAdapter.setValuesFromSharedPreferences(this)
+        hoursForecastRecyclerAdapter.setValuesFromSharedPreferences(this)
+
         daysForecastRecyclerAdapter.notifyDataSetChanged()
         hoursForecastRecyclerAdapter.notifyDataSetChanged()
     }

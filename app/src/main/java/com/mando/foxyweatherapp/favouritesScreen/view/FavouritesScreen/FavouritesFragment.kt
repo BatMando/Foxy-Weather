@@ -64,15 +64,6 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
 
     }
 
-    private fun handleAddBtnVisibility(){
-        if (!flagNoConnection){
-            addFav.visibility = View.VISIBLE
-        }
-        else {
-
-        }
-
-    }
     private fun observeFavourites(){
         favViewModel.getFavouritesFromDatabase().observe(this){
             if (it !=null)
@@ -137,9 +128,9 @@ class FavouritesFragment : Fragment() , onFavouriteDeleteListener, onFavouriteCl
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         if (isConnected) {
+            setListeners()
             if (flagNoConnection) {
                 addFav.visibility = View.VISIBLE
-                setListeners()
                 flagNoConnection = false
             }
         } else {
