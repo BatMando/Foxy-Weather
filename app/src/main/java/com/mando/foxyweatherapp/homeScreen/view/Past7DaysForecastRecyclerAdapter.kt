@@ -2,6 +2,7 @@ package com.mando.foxyweatherapp.homeScreen.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,6 @@ class Past7DaysForecastRecyclerAdapter :RecyclerView.Adapter<Past7DaysForecastRe
         val temp : TextView = itemView.findViewById(R.id.temp_tv)
         val img : ImageView = itemView.findViewById(R.id.weather_condition_img)
 
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,9 +42,12 @@ class Past7DaysForecastRecyclerAdapter :RecyclerView.Adapter<Past7DaysForecastRe
     }
 
 
-    override fun getItemCount(): Int = dailyWeather.size
+    override fun getItemCount(): Int{
+        return dailyWeather.size
+    }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        Log.e("mando", "onBindViewHolder: $language")
         viewHolder.img.setImageResource(getIcon(dailyWeather[position].weather[0].icon))
         viewHolder.day.text = getDayOfWeek(dailyWeather[position].dt,language)
         viewHolder.temp.text = "${dailyWeather[position].temp.max.toInt()}°C/${dailyWeather[position].temp.min.toInt()}°C"
