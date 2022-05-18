@@ -21,7 +21,6 @@ class AlertWindowManger (
     private val context: Context, private val description: String, private val icon: String)
 {
 
-
     private lateinit var imageIcon: ImageView
     private lateinit var textDescription: TextView
     private lateinit var okBtn: Button
@@ -60,10 +59,8 @@ class AlertWindowManger (
         textDescription = customNotificationDialogView.findViewById(R.id.text_description)
         okBtn = customNotificationDialogView.findViewById(R.id.btn_ok)
         okBtn.setOnClickListener { close() }
-
         textDescription.text = description
         imageIcon.setImageResource(getIcon(icon))
-
     }
 
     private fun close() {

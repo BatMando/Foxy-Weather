@@ -71,4 +71,6 @@
     <string name="fillRequired">Please Fill Required Fields</string>
     <string name="loading">Loading</string>
     <string name="applicationLoading">Application is loading, please wait</string>
+    <string name="notificationType">notification</string>
+    <string name="alarmType">alarm</string>
 </resources>

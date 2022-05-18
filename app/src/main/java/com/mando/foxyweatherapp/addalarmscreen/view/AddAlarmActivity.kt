@@ -168,17 +168,16 @@ class AddAlarmActivity : AppCompatActivity() {
         if (typeAlarm.isChecked || typeNotification.isChecked && !alarmFromEdit.editText?.text.isNullOrBlank() && !alarmToEdit.editText?.text.isNullOrBlank() && !alarmTimeEdit.editText?.text.isNullOrBlank()){
             when (radioGroupAlert.checkedRadioButtonId) {
                 R.id.notification_radio -> {
-                    alertType = getString(R.string.notification)
+                    alertType = getString(R.string.notificationType)
                 }
                 R.id.alarm_radio -> {
-                    alertType = getString(R.string.alarm)
+                    alertType = getString(R.string.alarmType)
                 }
             }
             alertDays = getDays(startDateSt,endDateSt)
             addAlertFragmentViewModel.insertAlert(startDate,endDate, alertTime, alertType, alertDays, lat, lon)
             setPeriodWorkManger()
             finish()
-//            addAlertDialog.dismiss()
         }
         else
         {

@@ -93,15 +93,6 @@ fun longToDateAsString(dateInMillis: Long, language: String): String {
     return dateFormat.format(d)
 }
 
-fun getCurrentTime(): Long {
-    val hour =
-        TimeUnit.HOURS.toMillis(Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toLong())
-    val minute =
-        TimeUnit.MINUTES.toMillis(Calendar.getInstance().get(Calendar.MINUTE).toLong())
-
-    return (hour + minute)
-}
-
 fun checkIfNight(time:Long): Boolean {
     val date = Date(TimeUnit.SECONDS.toMillis(time))
     val format = SimpleDateFormat("kk", Locale.ENGLISH)

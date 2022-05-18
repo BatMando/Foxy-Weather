@@ -43,7 +43,6 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
         GlobalScope.launch(Dispatchers.IO) {
             repository.localSource.getAllAlertsFlow().subscribe { alerts->
                 list =alerts
-                Log.e("mando", "getAllAlertsFlow: ${list.size}" )
             }
         }
     }
@@ -51,25 +50,19 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
     @RequiresApi(Build.VERSION_CODES.N)
     private suspend fun getCurrentData() {
         val currentWeather = repository.allStoredWeather()
-        Log.e("MyPeriodicManager","getCurrentData")
 
         if (list != null) {
-            Log.e("MyPeriodicManager","list not null")
             for (alert in list) {
                 if (alert.alertDays.stream()
                         .anyMatch { s -> s.contains(getCurrentDay().toString()) }) {
-                    Log.e("MyPeriodicManager", "anyMatch")
-
                     if (checkPeriod(alert.alertTime)) {
-                        Log.e("MyPeriodicManager", "checkPeriod")
-
                         if (currentWeather.alerts.isNullOrEmpty()) {
-                                Log.e("MyPeriodicManager", "isNullOrEmpty $delay")
                                 setOneTimeWorkManger(
                                     delay,
                                     alert.id,
                                     currentWeather.current.weather[0].description,
-                                    currentWeather.current.weather[0].icon
+                                    currentWeather.current.weather[0].icon,
+                                    alert.alertType
                                 )
                             }
                             else {
@@ -77,7 +70,8 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
                                     delay,
                                     alert.id,
                                     currentWeather.alerts!![0].tags[0],
-                                    currentWeather.current.weather[0].icon
+                                    currentWeather.current.weather[0].icon,
+                                    alert.alertType
                                 )
                             }
                         }
@@ -88,9 +82,7 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
     }
 
     private fun checkPeriod(medTime: Long): Boolean {
-
         delay = medTime - timeNow
-        Log.e("mando", "delay: $delay , $medTime" )
         return delay > 0
     }
 
@@ -100,13 +92,13 @@ class MyPeriodicManager (private val context: Context, workerParams: WorkerParam
         val minute = calendar[Calendar.MINUTE]
         timeNow = (hour * 60).toLong()
         timeNow = ((timeNow + minute) * 60 ) - 7200
-        Log.e("mando", "getTimePeriod: $timeNow" )
     }
 
-    private fun setOneTimeWorkManger(delay: Long, id: Int?, description: String, icon: String) {
+    private fun setOneTimeWorkManger(delay: Long, id: Int?, description: String, icon: String , alertType:String) {
         val data = Data.Builder()
         data.putString("description", description)
         data.putString("icon", icon)
+        data.putString("alertType", alertType)
         val constraints = Constraints.Builder()
             .setRequiresBatteryNotLow(true)
             .build()
