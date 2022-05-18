@@ -72,4 +72,5 @@
     <string name="fillRequired">الرجاء ملئ جميع المعلومات المطلوبة</string>
     <string name="loading">جار التحميل</string>
     <string name="applicationLoading">يتم تحميل التطبيق ، يرجى الانتظار</string>
+    <string name="notificationType">notification</string>
 </resources>

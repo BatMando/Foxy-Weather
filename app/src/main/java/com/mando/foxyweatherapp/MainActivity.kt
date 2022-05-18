@@ -75,5 +75,4 @@ class MainActivity : AppCompatActivity() {
         conf.setLayoutDirection(myLocale)
         res.updateConfiguration(conf, dm)
     }
-
 }

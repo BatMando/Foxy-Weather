@@ -51,10 +51,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
     private lateinit var alertFactory : AlertsFragmentViewModelFactory
     private lateinit var addAlert: FloatingActionButton
 
-
     lateinit var addAlertDialog: Dialog
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +63,6 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_alerts, container, false)
     }
 
@@ -87,8 +83,8 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
             alarmsRecyclerAdapter.notifyDataSetChanged()
         }
     }
-    private fun initView(view: View){
 
+    private fun initView(view: View){
         addAlertDialog = Dialog(requireContext())
         addAlert = view.findViewById(R.id.add_alarm)
         alarmsRecyclerView = view.findViewById(R.id.alarms_recycler)
@@ -97,6 +93,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
         alarmsRecyclerView.layoutManager = alarmsLayoutManger
         alarmsRecyclerView.adapter = alarmsRecyclerAdapter
     }
+
     private fun initViewModel(){
         alertFactory = AlertsFragmentViewModelFactory( Repository.getInstance(
             RemoteSource.getInstance(), ConcreteLocalSource(requireContext()), requireContext()
@@ -104,6 +101,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
         alertViewModel = ViewModelProvider(this,alertFactory)[AlertsFragmentViewModel::class.java]
 
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setListeners(){
         addAlert.setOnClickListener {
@@ -124,6 +122,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
             }
             .show()
     }
+
     private fun checkFirstTime(): Boolean {
         return getSharedPreferences(requireContext()).getBoolean(getString(R.string.permission), true)
     }
@@ -131,6 +130,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
     private fun setNotFirstTime() {
         getSharedPreferences(requireContext()).edit().putBoolean(getString(R.string.permission), false).apply()
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun openAddAlertActivity() {
         checkDrawOverlayPermission()

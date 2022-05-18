@@ -20,12 +20,7 @@ class ConcreteLocalSource (context: Context) : LocalSource {
         weatherDao = db?.weatherDao()
         alertsDao = db?.alertsDao()
         favouritesDao = db?.favouritesDao()
-
-
-
     }
-
-
 
 
     override suspend fun insertWeather(weather: WeatherResponse) {

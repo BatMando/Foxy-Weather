@@ -66,7 +66,6 @@ class DisplayFavouriteActivity : AppCompatActivity() {
         setListeners()
         getDataFromApi()
         observeWeather()
-
     }
 
     private fun getDataFromApi() {

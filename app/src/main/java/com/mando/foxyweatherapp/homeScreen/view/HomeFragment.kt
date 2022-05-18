@@ -1,46 +1,37 @@
 package com.mando.foxyweatherapp.homeScreen.view
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
-import android.location.Geocoder
 import android.net.ConnectivityManager
-import android.os.Build
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappmvvm.model.Repository
-import com.google.android.material.snackbar.Snackbar
 import com.mando.foxyweatherapp.MainActivity
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.database.ConcreteLocalSource
-import com.mando.foxyweatherapp.database.LocalSource
 import com.mando.foxyweatherapp.homeScreen.viewModel.HomeFragmentViewModel
 import com.mando.foxyweatherapp.homeScreen.viewModel.HomeFragmentViewModelFactory
 import com.mando.foxyweatherapp.map.view.MapActivity
-import com.mando.foxyweatherapp.model.responseModels.*
+import com.mando.foxyweatherapp.model.responseModels.WeatherResponse
 import com.mando.foxyweatherapp.network.RemoteSource
 import com.mando.foxyweatherapp.utitlity.*
 import com.mando.foxyweatherapp.utitlity.broadCast.NetworkChangeReceiver
-import java.io.IOException
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
-class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListener {
+class HomeFragment : Fragment(), NetworkChangeReceiver.ConnectivityReceiverListener {
 
     private lateinit var daysForecastRecyclerAdapter: Past7DaysForecastRecyclerAdapter
     private lateinit var daysLayoutManger: RecyclerView.LayoutManager
@@ -76,8 +67,6 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
     private lateinit var progressDialog: ProgressDialog
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setValuesFromSharedPreferences()
@@ -88,39 +77,81 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initNetworkReceiver()
         initView(view)
-
-        NetworkChangeReceiver.connectivityReceiverListener = this
-        activity?.registerReceiver(NetworkChangeReceiver(),
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
-
-        progressDialog = ProgressDialog(context)
-        progressDialog.setTitle(getString(R.string.loading))
-        progressDialog.setMessage(getString(R.string.applicationLoading))
-        progressDialog.show()
-
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(
-            Repository.getInstance(
-                RemoteSource.getInstance(), ConcreteLocalSource(requireContext()), requireContext()
-            ), MyLocationProvider(this)
-        )
-        homeFragmentViewModel =
-            ViewModelProvider(this, homeFragmentViewModelFactory)[HomeFragmentViewModel::class.java]
+        startIndicator()
+        initViewModel()
+        flagNoConnection = isOnline()
 
         if (!flagNoConnection) {
-            if (getIsMap()) {
-                if (isSharedPreferencesLatAndLongNull(requireContext())){
-                    val intent = Intent(requireContext(), MapActivity::class.java)
-                    intent.putExtra("isFavourite", false)
-                    startActivity(intent)
-                }
+            Log.e("TAG", "get from database: ")
+            homeFragmentViewModel.getDataFromDatabase()
+        } else {
+            Log.e("TAG", "getlocation: ")
+            getWeatherLocation()
+        }
+
+        observeWeather()
+
+    }
+
+    private fun getWeatherLocation() {
+        if (getIsMap()) {
+            if (isSharedPreferencesLatAndLongNull(requireContext())) {
+                openMap()
+            }
+            try {
+                homeFragmentViewModel.getDataFromRemoteToLocal(latitude, longitude, language, units)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            homeFragmentViewModel.getFreshLocation()
+            observeLocation()
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun observeWeather() {
+        homeFragmentViewModel.myWeather.observe(this.viewLifecycleOwner) { weather ->
+            setDataToViews(weather, requireContext())
+            Log.e("mando", "observeWeather: ")
+            if (checkIfNight(weather.current.dt)) {
+                (requireActivity() as MainActivity).constraintLayout.background =
+                    resources.getDrawable(R.drawable.night)
+            } else {
+                (requireActivity() as MainActivity).constraintLayout.background =
+                    resources.getDrawable(R.drawable.day)
+            }
+            progressDialog.dismiss()
+        }
+    }
+
+    private fun observeLocation() {
+        homeFragmentViewModel.observeLocation().observe(this) {
+            if (it[0] != 0.0 && it[1] != 0.0) {
+                latitude = it[0]
+                longitude = it[1]
+                val local = getCurrentLocale(requireContext())
+                language = getSharedPreferences(requireContext()).getString(
+                    getString(R.string.languageSetting),
+                    local?.language
+                )!!
+                units = getSharedPreferences(requireContext()).getString(
+                    getString(R.string.unitsSetting),
+                    "metric"
+                )!!
+                val editor = getSharedPreferences(requireContext()).edit()
+                editor.putFloat(getString(R.string.lat), latitude.toFloat())
+                editor.putFloat(getString(R.string.lon), longitude.toFloat())
+                editor.putBoolean(getString(R.string.firstTime), false)
+                editor.putBoolean(getString(R.string.isMap), false)
+                editor.apply()
                 try {
                     homeFragmentViewModel.getDataFromRemoteToLocal(
                         latitude,
@@ -131,68 +162,43 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_SHORT).show()
                 }
-                Log.e("mando","getIsMap:lat $latitude, lon $longitude")
-            } else {
-                Log.e("mando","get location :lat $latitude, lon $longitude")
-                val location = MyLocationProvider(this)
-                if (location.checkPermission() && location.isLocationEnabled()) {
-                    homeFragmentViewModel.getFreshLocation()
-                }else {
-                    homeFragmentViewModel.getFreshLocation()
-                }
-                homeFragmentViewModel.observeLocation().observe(this) {
-                    if (it[0] != 0.0 && it[1] != 0.0) {
-                        latitude = it[0]
-                        longitude = it[1]
-                        val local = getCurrentLocale(requireContext())
-                        language = getSharedPreferences(requireContext()).getString(
-                            getString(R.string.languageSetting),
-                            local?.language
-                        )!!
-                        units = getSharedPreferences(requireContext()).getString(
-                            getString(R.string.unitsSetting),
-                            "metric"
-                        )!!
-
-                        val editor = getSharedPreferences(requireContext()).edit()
-                        editor.putFloat(getString(R.string.lat), latitude.toFloat())
-                        editor.putFloat(getString(R.string.lon), longitude.toFloat())
-                        editor.putBoolean(getString(R.string.firstTime), false)
-                        editor.putBoolean(getString(R.string.isMap), false)
-                        editor.apply()
-                        try {
-                            homeFragmentViewModel.getDataFromRemoteToLocal(
-                                latitude,
-                                longitude,
-                                language,
-                                units
-                            )
-                        } catch (e: Exception) {
-                            Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
             }
-
-        } else{
-            Log.e("mando","no network:lat $latitude, lon $longitude")
-            homeFragmentViewModel.getDataFromDatabase()
-        }
-
-        homeFragmentViewModel.myWeather.observe(this.viewLifecycleOwner) { weather ->
-            setDataToViews(weather, requireContext())
-
-            Log.e("mando", "onViewCreated: +${weather.current.dt}" )
-            if (checkIfNight(weather.current.dt)){
-                (requireActivity() as MainActivity).constraintLayout.background = resources.getDrawable(R.drawable.night)
-            }else {
-                (requireActivity() as MainActivity).constraintLayout.background = resources.getDrawable(R.drawable.day)
-            }
-            progressDialog.dismiss()
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun openMap() {
+        val intent = Intent(requireContext(), MapActivity::class.java)
+        intent.putExtra("isFavourite", false)
+        startActivity(intent)
+    }
+
+    private fun initViewModel() {
+        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(
+            Repository.getInstance(
+                RemoteSource.getInstance(), ConcreteLocalSource(requireContext()), requireContext()
+            ), MyLocationProvider(this)
+        )
+        homeFragmentViewModel =
+            ViewModelProvider(this, homeFragmentViewModelFactory)[HomeFragmentViewModel::class.java]
+
+    }
+
+    private fun startIndicator() {
+        progressDialog = ProgressDialog(context)
+        progressDialog.setTitle(getString(R.string.loading))
+        progressDialog.setMessage(getString(R.string.applicationLoading))
+        progressDialog.show()
+    }
+
+    private fun initNetworkReceiver() {
+        NetworkChangeReceiver.connectivityReceiverListener = this
+        activity?.registerReceiver(
+            NetworkChangeReceiver(),
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setDataToViews(weatherResponse: WeatherResponse, context: Context) {
 
         if (language == "ar") {
@@ -210,8 +216,7 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
             uvTv.text = "${convertNumbersToArabic(weatherResponse.current.uvi.toInt())}%"
             visibilityTv.text =
                 "${convertNumbersToArabic(weatherResponse.current.visibility)}$windSpeedUnit"
-        }
-        else {
+        } else {
             setEnglishUnits(units)
             tvCurrentTemp.text = "${weatherResponse.current.temp.toInt()}"
             tvDayTemp.text =
@@ -224,7 +229,7 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
             visibilityTv.text = "${weatherResponse.current.visibility}$windSpeedUnit"
         }
         tvLocation.text = getCityText(context, weatherResponse.lat, weatherResponse.lon, language)
-        tvDate.text = longToDateAsString(weatherResponse.current.dt,language)
+        tvDate.text = longToDateAsString(weatherResponse.current.dt, language)
         tvTempState.text = weatherResponse.current.weather[0].description
         tvTempUnit.text = temperatureUnit
 
@@ -290,10 +295,6 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
                 temperatureUnit = " °ف"
                 windSpeedUnit = " ميل/س"
             }
-            "standard" -> {
-                temperatureUnit = " °ك"
-                windSpeedUnit = " م/ث"
-            }
         }
     }
 
@@ -307,22 +308,24 @@ class HomeFragment : Fragment(),NetworkChangeReceiver.ConnectivityReceiverListen
                 temperatureUnit = " °F"
                 windSpeedUnit = " miles/h"
             }
-            "standard" -> {
-                temperatureUnit = " °K"
-                windSpeedUnit = " m/s"
-            }
         }
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        Log.e("mando", "onNetworkConnectionChanged: $isConnected" )
         if (isConnected) {
-            if (flagNoConnection) {
-
-                flagNoConnection = false
-            }
+            Log.e("mando", "onNetworkConnectionChanged has connection: $flagNoConnection" )
+            flagNoConnection = !isConnected
         } else {
+            Log.e("mando", "onNetworkConnectionChanged lost connection: ${!isConnected}" )
             Toast.makeText(requireContext(),getString(R.string.noInternetConnection),Toast.LENGTH_SHORT).show()
-            flagNoConnection = true
+            flagNoConnection = !isConnected
+            Log.e("mando", "onNetworkConnectionChanged has no connection: $flagNoConnection" )
         }
+    }
+    private fun isOnline(): Boolean {
+        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = cm.activeNetworkInfo
+        return netInfo != null && netInfo.isConnectedOrConnecting
     }
 }

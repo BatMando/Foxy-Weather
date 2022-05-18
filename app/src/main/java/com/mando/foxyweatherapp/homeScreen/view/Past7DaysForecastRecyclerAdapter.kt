@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.model.responseModels.DailyWeather
+import com.mando.foxyweatherapp.utitlity.convertNumbersToArabic
 import com.mando.foxyweatherapp.utitlity.getDayOfWeek
 import com.mando.foxyweatherapp.utitlity.getIcon
 import com.mando.foxyweatherapp.utitlity.getSharedPreferences
@@ -18,6 +19,8 @@ import com.mando.foxyweatherapp.utitlity.getSharedPreferences
 class Past7DaysForecastRecyclerAdapter :RecyclerView.Adapter<Past7DaysForecastRecyclerAdapter.ViewHolder>(){
     private var language: String = "en"
     private var units: String = "metric"
+    private lateinit var windSpeedUnit: String
+    private lateinit var temperatureUnit: String
 
     var dailyWeather: List<DailyWeather> = arrayListOf()
 
@@ -46,10 +49,45 @@ class Past7DaysForecastRecyclerAdapter :RecyclerView.Adapter<Past7DaysForecastRe
         return dailyWeather.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(viewHolder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        Log.e("mando", "onBindViewHolder: $language")
-        viewHolder.img.setImageResource(getIcon(dailyWeather[position].weather[0].icon))
-        viewHolder.day.text = getDayOfWeek(dailyWeather[position].dt,language)
-        viewHolder.temp.text = "${dailyWeather[position].temp.max.toInt()}°C/${dailyWeather[position].temp.min.toInt()}°C"
- }
+        if (language == "ar") {
+            setArabicUnit(units)
+            viewHolder.img.setImageResource(getIcon(dailyWeather[position].weather[0].icon))
+            viewHolder.day.text = getDayOfWeek(dailyWeather[position].dt,language)
+            viewHolder.temp.text = "${convertNumbersToArabic(dailyWeather[position].temp.max.toInt())}$temperatureUnit/${convertNumbersToArabic(dailyWeather[position].temp.min.toInt())}$temperatureUnit"
+        }else{
+            setEnglishUnits(units)
+            viewHolder.img.setImageResource(getIcon(dailyWeather[position].weather[0].icon))
+            viewHolder.day.text = getDayOfWeek(dailyWeather[position].dt,language)
+            viewHolder.temp.text = "${dailyWeather[position].temp.max.toInt()}$temperatureUnit/${dailyWeather[position].temp.min.toInt()}$temperatureUnit"
+        }
+
+    }
+
+    private fun setArabicUnit(units: String) {
+        when (units) {
+            "metric" -> {
+                temperatureUnit = " °م"
+                windSpeedUnit = " م/ث"
+            }
+            "imperial" -> {
+                temperatureUnit = " °ف"
+                windSpeedUnit = " ميل/س"
+            }
+        }
+    }
+
+    private fun setEnglishUnits(units: String) {
+        when (units) {
+            "metric" -> {
+                temperatureUnit = "°C"
+                windSpeedUnit = " m/s"
+            }
+            "imperial" -> {
+                temperatureUnit = "°F"
+                windSpeedUnit = " miles/h"
+            }
+        }
+    }
 }

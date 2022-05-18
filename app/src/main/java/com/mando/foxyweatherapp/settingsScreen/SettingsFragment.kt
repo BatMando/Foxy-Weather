@@ -1,6 +1,8 @@
 package com.mando.foxyweatherapp.settingsScreen
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -10,14 +12,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mando.foxyweatherapp.MainActivity
 import com.mando.foxyweatherapp.R
 import com.mando.foxyweatherapp.map.view.MapActivity
+import com.mando.foxyweatherapp.utitlity.broadCast.NetworkChangeReceiver
 import com.mando.foxyweatherapp.utitlity.getSharedPreferences
 
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment() , NetworkChangeReceiver.ConnectivityReceiverListener {
 
     private lateinit var newUnitSetting: String
     private lateinit var newLanguageSetting: String
@@ -38,6 +42,9 @@ class SettingsFragment : Fragment() {
     private lateinit var radioGroupUnits: RadioGroup
     private lateinit var btnSave: Button
 
+    private var flagNoConnection: Boolean = false
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +63,13 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+        initNetworkReceiver()
         setSettings()
+        setListeners()
+
+    }
+
+    private fun setListeners() {
         btnSave.setOnClickListener {
             getLocationSettings()
             getLanguagesSettings()
@@ -69,6 +82,7 @@ class SettingsFragment : Fragment() {
             }
         }
     }
+
 
     fun initView (view: View){
         settingsEnglish = view.findViewById<RadioButton>(R.id.settings_english)
@@ -183,6 +197,31 @@ class SettingsFragment : Fragment() {
                 dialog.dismiss()
             }
             .show()
+    }
+    private fun initNetworkReceiver() {
+        NetworkChangeReceiver.connectivityReceiverListener = this
+        activity?.registerReceiver(NetworkChangeReceiver(),
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        if (isConnected) {
+            setListeners()
+            if (flagNoConnection) {
+//                btnSave.isEnabled = true
+//                btnSave.isClickable = true
+                btnSave.visibility = View.VISIBLE
+                flagNoConnection = false
+            }
+        } else {
+            btnSave.visibility = View.GONE
+//            btnSave.isEnabled = false
+//            btnSave.isClickable = false
+            Toast.makeText(requireContext(),getString(R.string.noInternetConnection), Toast.LENGTH_SHORT).show()
+            flagNoConnection = true
+        }
     }
 
 }
