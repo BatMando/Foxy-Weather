@@ -101,7 +101,6 @@ fun checkIfNight(time:Long): Boolean {
     return (false)
 }
 
-
 fun getSharedPreferences(context: Context): SharedPreferences {
     return context.getSharedPreferences(
         context.getString(R.string.shared_pref),
@@ -115,7 +114,6 @@ fun isSharedPreferencesLatAndLongNull(context: Context): Boolean {
     val long = myPref.getFloat(context.getString(R.string.lon), 0.0f)
     return lat == 0.0f && long == 0.0f
 }
-
 
 
 fun getCurrentLocale(context: Context): Locale? {

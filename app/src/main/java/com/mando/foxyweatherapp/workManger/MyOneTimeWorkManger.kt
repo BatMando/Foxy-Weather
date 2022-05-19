@@ -38,12 +38,14 @@ class MyOneTimeWorkManger (private val context: Context, workerParams: WorkerPar
         val description = inputData.getString("description")!!
         val icon = inputData.getString("icon")!!
         val alertType = inputData.getString("alertType")!!
+        Log.e("MyOneTimeWorkManger","do work")
 
         notificationChannel()
         makeNotification(description, icon)
 
         //check type
-        if (alertType == context.getString(R.string.alarmType)){
+        if (alertType == "alarm"){
+            Log.e("mando", "doWork: alarm" )
             if (Settings.canDrawOverlays(context)) {
                 GlobalScope.launch(Dispatchers.Main) {
                     alertWindowManger = AlertWindowManger(context, description, icon)

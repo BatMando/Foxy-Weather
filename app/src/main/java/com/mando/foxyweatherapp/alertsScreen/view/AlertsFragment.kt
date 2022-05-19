@@ -133,7 +133,7 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun openAddAlertActivity() {
-        checkDrawOverlayPermission()
+        //checkDrawOverlayPermission()
         if (checkFirstTime()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 checkDrawOverlayPermission()
@@ -166,8 +166,6 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
                     // request permission via start activity for result
                     startActivityForResult(intent, 1)
                     //It will call onActivityResult Function After you press Yes/No and go Back after giving permission
-
-
                 }.setNegativeButton(
                     getString(R.string.overlay_negative_button)
                 ) { dialog: DialogInterface, _: Int ->

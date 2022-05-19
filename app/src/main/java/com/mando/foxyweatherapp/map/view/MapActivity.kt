@@ -41,17 +41,14 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
-        //handleBackButton()
 
         map =
             (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?)!!
         btnDone = findViewById<Button>(R.id.btn_Done)
         isFavorite = intent.getBooleanExtra("isFavorite",false)
 
-
         map?.getMapAsync(callback)
 
-        //handleBackButton()
         btnDone.setOnClickListener {
             if (isFavorite) {
                 navigateToFavoriteScreen(lat, lon)
@@ -102,22 +99,4 @@ class MapActivity : AppCompatActivity() {
         startActivity(Intent(this,MainActivity::class.java))
         finish()
     }
-
-
-//    private fun handleBackButton() {
-////        binding.root.isFocusableInTouchMode = true
-////        binding.root.requestFocus()
-////        binding.root.setOnKeyListener(View.OnKeyListener { view, keyCode, event ->
-////            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-////                if (isFavorite) {
-////                    startActivity(Intent(this, FavouriteActivity::class.java))
-////
-////                } else {
-////                    startActivity(Intent(this,HomeActivity::class.java))
-////                }
-////                return@OnKeyListener true
-////            }
-////            false
-////        })
-//    }
 }

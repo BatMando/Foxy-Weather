@@ -66,7 +66,6 @@ class SettingsFragment : Fragment() , NetworkChangeReceiver.ConnectivityReceiver
         initNetworkReceiver()
         setSettings()
         setListeners()
-
     }
 
     private fun setListeners() {
@@ -210,15 +209,11 @@ class SettingsFragment : Fragment() , NetworkChangeReceiver.ConnectivityReceiver
         if (isConnected) {
             setListeners()
             if (flagNoConnection) {
-//                btnSave.isEnabled = true
-//                btnSave.isClickable = true
                 btnSave.visibility = View.VISIBLE
                 flagNoConnection = false
             }
         } else {
             btnSave.visibility = View.GONE
-//            btnSave.isEnabled = false
-//            btnSave.isClickable = false
             Toast.makeText(requireContext(),getString(R.string.noInternetConnection), Toast.LENGTH_SHORT).show()
             flagNoConnection = true
         }
