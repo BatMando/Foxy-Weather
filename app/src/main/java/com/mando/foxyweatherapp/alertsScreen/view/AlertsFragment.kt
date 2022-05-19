@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkManager
 import com.example.moviesappmvvm.model.Repository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,6 +38,10 @@ import com.mando.foxyweatherapp.network.RemoteSource
 import com.mando.foxyweatherapp.utitlity.convertLongToTime
 import com.mando.foxyweatherapp.utitlity.dateToLong
 import com.mando.foxyweatherapp.utitlity.getSharedPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -116,7 +121,13 @@ class AlertsFragment : Fragment() , onAlertDeleteListener{
                 dialog.dismiss()
             }
             .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-                alertViewModel.deleteAlert(alerts)
+                WorkManager.getInstance().cancelUniqueWork("${alerts.id}")
+                val coroutineScope = CoroutineScope(Dispatchers.Main)
+                coroutineScope.launch {
+                    delay(1000)
+                    alertViewModel.deleteAlert(alerts)
+                }
+                //alertViewModel.deleteAlert(alerts)
                 dialog.dismiss()
                 Toast.makeText(requireContext(),getString(R.string.deleteSuccess), Toast.LENGTH_SHORT).show()
             }
