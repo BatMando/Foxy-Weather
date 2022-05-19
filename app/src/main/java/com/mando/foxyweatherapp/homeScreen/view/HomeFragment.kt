@@ -132,6 +132,7 @@ class HomeFragment : Fragment(), NetworkChangeReceiver.ConnectivityReceiverListe
         }
     }
 
+
     private fun observeLocation() {
         homeFragmentViewModel.observeLocation().observe(this) {
             if (it[0] != 0.0 && it[1] != 0.0) {

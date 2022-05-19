@@ -29,9 +29,7 @@ import java.util.*
 class SplashScreen : AppCompatActivity() ,NetworkChangeReceiver.ConnectivityReceiverListener{
     private val parentJob = Job()
     lateinit var firstInitDialog: Dialog
-
     private var flagNoConnection: Boolean = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +45,6 @@ class SplashScreen : AppCompatActivity() ,NetworkChangeReceiver.ConnectivityRece
             else{
                 openFirstInitDialog()
             }
-
         }
     }
 
@@ -98,7 +95,6 @@ class SplashScreen : AppCompatActivity() ,NetworkChangeReceiver.ConnectivityRece
     }
 
 
-
     private fun isFirstTime(): Boolean {
         return getSharedPreferences(this).getBoolean("firstTime", true)
     }
@@ -115,7 +111,6 @@ class SplashScreen : AppCompatActivity() ,NetworkChangeReceiver.ConnectivityRece
 
             if (isConnected) {
                 if (flagNoConnection) {
-
                     flagNoConnection = false
                 }
             } else {

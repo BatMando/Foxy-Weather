@@ -17,6 +17,7 @@ import com.mando.foxyweatherapp.homeScreen.view.HomeFragment
 import com.mando.foxyweatherapp.alertsScreen.view.AlertsFragment
 import com.mando.foxyweatherapp.settingsScreen.SettingsFragment
 import com.mando.foxyweatherapp.utitlity.getCurrentLocale
+import com.mando.foxyweatherapp.utitlity.getSharedPreferences
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -52,13 +53,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val localLang = getCurrentLocale(this)
-        val languageLocale = com.mando.foxyweatherapp.utitlity.getSharedPreferences(this).getString(
+        val languageLocale = getSharedPreferences(this).getString(
             getString(R.string.languageSetting), localLang?.language) ?: localLang?.language
         setLocale(languageLocale!!)
         bubbleNavigationLinearView = findViewById(R.id.bottom_nav)
         bubbleNavigationLinearView?.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        bubbleNavigationLinearView?.setSelectedItemId(R.id.homeToggle)
-        bubbleNavigationLinearView?.getMenu()?.clear();
+        bubbleNavigationLinearView?.selectedItemId = R.id.homeToggle
+        bubbleNavigationLinearView?.menu?.clear();
         bubbleNavigationLinearView?.inflateMenu(R.menu.bottom_nav_menu);
 
         constraintLayout = findViewById(R.id.homeScreenLayout)

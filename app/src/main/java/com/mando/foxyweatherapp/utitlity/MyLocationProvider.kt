@@ -20,7 +20,7 @@ class MyLocationProvider(private val fragment: Fragment) {
     private var fusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(fragment.requireActivity())
 
-    fun checkPermission(): Boolean {
+    private fun checkPermission(): Boolean {
         return (ContextCompat.checkSelfPermission(
             fragment.requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -36,7 +36,7 @@ class MyLocationProvider(private val fragment: Fragment) {
     }
 
     // for get last location
-    fun isLocationEnabled(): Boolean {
+    private fun isLocationEnabled(): Boolean {
         val locationManager =
             fragment.requireActivity().application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -47,8 +47,6 @@ class MyLocationProvider(private val fragment: Fragment) {
         fragment.registerForActivityResult(RequestPermission()) { isGranted ->
             if (isGranted) {
                 getFreshLocation()
-            } else {
-                denyPermission.postValue("denied")
             }
         }
 
@@ -89,9 +87,6 @@ class MyLocationProvider(private val fragment: Fragment) {
 
     private var _locationList = MutableLiveData<ArrayList<Double>>()
     val locationList = _locationList
-
-    private var _denyPermission = MutableLiveData<String>()
-    private val denyPermission = _denyPermission
 
     private fun enableLocationSetting() {
         val settingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
